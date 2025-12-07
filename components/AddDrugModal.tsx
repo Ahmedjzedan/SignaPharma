@@ -22,18 +22,18 @@ export default function AddDrugModal({
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
 
       {/* Modal Panel */}
       <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0 pointer-events-none">
-        <div className="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl pointer-events-auto">
-          <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
-            <h3 className="font-bold text-slate-900">Add to Cabinet</h3>
+        <div className="relative transform overflow-hidden rounded-2xl bg-card text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl pointer-events-auto border border-border">
+          <div className="bg-muted px-4 py-3 border-b border-border flex justify-between items-center">
+            <h3 className="font-bold text-card-foreground">Add to Cabinet</h3>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-600"
+              className="text-muted-foreground hover:text-foreground"
             >
               <X className="w-5 h-5" />
             </button>
@@ -42,38 +42,38 @@ export default function AddDrugModal({
           <div className="p-6">
             {/* Search Input */}
             <div className="relative mb-6">
-              <Search className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search by generic or brand name (e.g. Panadol)"
-                className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent text-sm"
+                className="w-full pl-10 pr-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent text-sm text-foreground placeholder:text-muted-foreground"
                 autoFocus
               />
-              <span className="absolute right-3 top-3 text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded border border-slate-200 font-mono">
+              <span className="absolute right-3 top-3 text-xs bg-muted text-muted-foreground px-2 py-1 rounded border border-border font-mono">
                 OpenFDA
               </span>
             </div>
 
             {/* Simulated Results */}
             <div className="space-y-2">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
                 Suggestions
               </p>
 
               {/* Result 1 */}
-              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all cursor-pointer group">
+              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted border border-transparent hover:border-border transition-all cursor-pointer group">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded flex items-center justify-center font-bold text-xs">
                     Pa
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900 text-sm">
+                    <p className="font-bold text-card-foreground text-sm">
                       Panadol{" "}
-                      <span className="text-slate-400 font-normal">
+                      <span className="text-muted-foreground font-normal">
                         (Paracetamol)
                       </span>
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-muted-foreground">
                       Analgesic • Antipyretic
                     </p>
                   </div>
@@ -90,16 +90,16 @@ export default function AddDrugModal({
               </div>
 
               {/* Result 2 */}
-              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all cursor-pointer group">
+              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted border border-transparent hover:border-border transition-all cursor-pointer group">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-orange-100 text-orange-600 rounded flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded flex items-center justify-center font-bold text-xs">
                     Pa
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900 text-sm">
+                    <p className="font-bold text-card-foreground text-sm">
                       Pantoprazole
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-muted-foreground">
                       Proton Pump Inhibitor
                     </p>
                   </div>

@@ -64,7 +64,7 @@ export default function DrugCard({
   return (
     <div
       className={clsx(
-        "group bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 animate-slide-up relative overflow-hidden",
+        "group bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-xl transition-all duration-300 animate-slide-up relative overflow-hidden",
         styles.border,
         styles.shadow
       )}
@@ -86,21 +86,21 @@ export default function DrugCard({
         </div>
         <button
           onClick={() => onDelete(id)}
-          className="text-slate-300 hover:text-red-500 transition-colors"
+          className="text-muted-foreground hover:text-destructive transition-colors"
         >
           <Trash2 className="w-4 h-4" />
         </button>
       </div>
 
-      <h3 className="text-lg font-bold text-slate-900 mb-1">{name}</h3>
-      <p className="text-xs text-slate-500 mb-4 font-mono">{drugClass}</p>
+      <h3 className="text-lg font-bold text-card-foreground mb-1">{name}</h3>
+      <p className="text-xs text-muted-foreground mb-4 font-mono">{drugClass}</p>
 
       <div className="space-y-2">
         <div className="flex justify-between text-xs font-medium">
-          <span className="text-slate-500">Mastery Level</span>
+          <span className="text-muted-foreground">Mastery Level</span>
           <span className={styles.text}>{mastery}%</span>
         </div>
-        <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+        <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
           <div
             className={clsx("h-1.5 rounded-full", styles.bar)}
             style={{ width: `${mastery}%` }}
@@ -111,13 +111,13 @@ export default function DrugCard({
       <div className="mt-6 flex gap-2">
         <button
           onClick={() => onExam(name)}
-          className="flex-1 px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1"
+          className="flex-1 px-3 py-2 bg-foreground hover:bg-foreground/90 text-background text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1"
         >
           <Zap className="w-3 h-3 text-yellow-400" /> Exam
         </button>
         <button
           onClick={() => onView(name)}
-          className="px-3 py-2 border border-slate-200 hover:border-medical-300 hover:text-medical-600 text-slate-600 text-xs font-bold rounded-lg transition-colors"
+          className="px-3 py-2 border border-border hover:border-medical-300 hover:text-medical-600 text-muted-foreground text-xs font-bold rounded-lg transition-colors"
         >
           View
         </button>

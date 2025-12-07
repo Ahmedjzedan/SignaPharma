@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 
 import { auth } from "@/lib/auth";
 import SessionProvider from "@/components/SessionProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default async function RootLayout({
   children,
@@ -16,10 +17,17 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="antialiased overflow-x-hidden flex flex-col min-h-screen">
         <SessionProvider session={session}>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>

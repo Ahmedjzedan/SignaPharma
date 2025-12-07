@@ -1,8 +1,5 @@
-import Navbar from "../../components/Navbar";
 import BlogHeader from "../../components/BlogHeader";
 import BlogGrid, { BlogPost } from "../../components/BlogGrid";
-import Footer from "../../components/Footer";
-import BlogSubNav from "../../components/BlogSubNav";
 import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { posts, users } from "@/lib/db/schema";
@@ -41,13 +38,10 @@ export default async function BlogPage() {
 
   return (
     <>
-      <Navbar />
-      <BlogSubNav />
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <BlogHeader />
         <BlogGrid posts={mappedPosts} />
       </main>
-      <Footer />
     </>
   );
 }

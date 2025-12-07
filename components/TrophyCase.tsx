@@ -46,7 +46,7 @@ const badges: Badge[] = [
     id: "5",
     name: "Admin God",
     description: "Locked",
-    icon: <Lock className="w-8 h-8 text-slate-400" />,
+    icon: <Lock className="w-8 h-8 text-muted-foreground" />,
     color: "slate",
     isLocked: true,
   },
@@ -54,7 +54,7 @@ const badges: Badge[] = [
     id: "6",
     name: "Retirement Ready",
     description: "Locked",
-    icon: <Lock className="w-8 h-8 text-slate-400" />,
+    icon: <Lock className="w-8 h-8 text-muted-foreground" />,
     color: "slate",
     isLocked: true,
   },
@@ -78,27 +78,27 @@ const colorMap = {
     ring: "ring-blue-50",
   },
   slate: {
-    bg: "bg-slate-200",
-    ring: "ring-transparent border-2 border-dashed border-slate-400",
+    bg: "bg-muted",
+    ring: "ring-transparent border-2 border-dashed border-muted-foreground",
   },
 };
 
 export default function TrophyCase() {
   return (
     <div
-      className="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 animate-slide-up"
+      className="bg-card rounded-3xl border border-border shadow-sm p-8 animate-slide-up"
       style={{ animationDelay: "0.2s" }}
     >
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-card-foreground flex items-center gap-2">
             <Medal className="w-5 h-5 text-medical-600" /> Trophy Case
           </h2>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Pin your top 5 achievements to annoy your colleagues.
           </p>
         </div>
-        <span className="text-xs font-bold bg-slate-100 text-slate-500 px-3 py-1 rounded-full">
+        <span className="text-xs font-bold bg-muted text-muted-foreground px-3 py-1 rounded-full">
           8 / 24 Unlocked
         </span>
       </div>
@@ -122,7 +122,7 @@ export default function TrophyCase() {
                 >
                   {badge.icon}
                 </div>
-                <span className="text-xs font-bold text-slate-400 text-center">
+                <span className="text-xs font-bold text-muted-foreground text-center">
                   {badge.name}
                 </span>
               </div>
@@ -149,7 +149,7 @@ export default function TrophyCase() {
                 {badge.icon}
                 <span className="tooltip">{badge.description}</span>
               </div>
-              <span className="text-xs font-bold text-slate-700 text-center">
+              <span className="text-xs font-bold text-foreground text-center">
                 {badge.name}
               </span>
             </div>

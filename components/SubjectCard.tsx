@@ -25,7 +25,7 @@ export default function SubjectCard({
   return (
     <div
       onClick={() => onClick(id)}
-      className="group bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-medical-600/10 hover:border-medical-200 transition-all duration-300 cursor-pointer animate-slide-up"
+      className="group bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-xl hover:shadow-medical-600/10 hover:border-medical-200 transition-all duration-300 cursor-pointer animate-slide-up"
       style={{ animationDelay: delay }}
     >
       <div
@@ -36,8 +36,8 @@ export default function SubjectCard({
       >
         <div className={clsx("w-7 h-7", textClass)}>{icon}</div>
       </div>
-      <h3 className="text-xl font-bold text-slate-900 mb-2">{title}</h3>
-      <p className="text-slate-600 text-sm leading-relaxed">{description}</p>
+      <h3 className="text-xl font-bold text-card-foreground mb-2">{title}</h3>
+      <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
       <div
         className={clsx(
           "mt-6 flex items-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0",

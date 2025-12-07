@@ -55,13 +55,13 @@ export default function CaseInteraction({
   return (
     <section className="lg:w-2/3 flex flex-col">
       {/* The "Sarcastic Doctor" Prompt */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-8 relative">
+      <div className="bg-card rounded-2xl p-6 border border-border shadow-sm mb-8 relative">
         {/* Speech Bubble Tail */}
-        <div className="absolute -bottom-3 left-8 w-6 h-6 bg-white border-b border-r border-slate-200 transform rotate-45 md:hidden"></div>
-        <div className="absolute top-8 -left-3 w-6 h-6 bg-white border-b border-l border-slate-200 transform rotate-45 hidden md:block"></div>
+        <div className="absolute -bottom-3 left-8 w-6 h-6 bg-card border-b border-r border-border transform rotate-45 md:hidden"></div>
+        <div className="absolute top-8 -left-3 w-6 h-6 bg-card border-b border-l border-border transform rotate-45 hidden md:block"></div>
 
         <div className="flex items-start gap-4">
-          <div className="hidden md:block w-14 h-14 rounded-full bg-slate-800 flex-shrink-0 border-4 border-white shadow-lg overflow-hidden">
+          <div className="hidden md:block w-14 h-14 rounded-full bg-muted flex-shrink-0 border-4 border-background shadow-lg overflow-hidden">
             <img
               src={doctorImage}
               alt="Attending"
@@ -72,7 +72,7 @@ export default function CaseInteraction({
             <p className="text-xs font-bold text-medical-600 uppercase mb-1">
               {doctorName}
             </p>
-            <h2 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">
+            <h2 className="text-xl md:text-2xl font-bold text-card-foreground leading-tight">
               &quot;{prompt}&quot;
             </h2>
           </div>
@@ -89,12 +89,12 @@ export default function CaseInteraction({
             className={clsx(
               "w-full text-left p-5 rounded-xl border-2 transition-all group flex items-center justify-between",
               selectedOption === null
-                ? "border-slate-200 bg-white hover:border-medical-500 hover:bg-medical-50"
+                ? "border-border bg-card hover:border-medical-500 hover:bg-medical-50 dark:hover:bg-medical-900/20"
                 : selectedOption === option.id
                 ? option.isCorrect
                   ? "bg-green-50 border-green-500 text-green-800"
                   : "bg-red-50 border-red-500 text-red-800"
-                : "opacity-50 cursor-not-allowed border-slate-200 bg-white"
+                : "opacity-50 cursor-not-allowed border-border bg-card"
             )}
           >
             <div>
@@ -102,17 +102,17 @@ export default function CaseInteraction({
                 className={clsx(
                   "block text-xs font-bold mb-1",
                   selectedOption === null
-                    ? "text-slate-400 group-hover:text-medical-500"
+                    ? "text-muted-foreground group-hover:text-medical-500"
                     : selectedOption === option.id
                     ? option.isCorrect
                       ? "text-green-600"
                       : "text-red-600"
-                    : "text-slate-400"
+                    : "text-muted-foreground"
                 )}
               >
                 {option.label}
               </span>
-              <span className="text-lg font-medium text-slate-800">
+              <span className="text-lg font-medium text-foreground">
                 {option.text}
               </span>
             </div>
@@ -120,12 +120,12 @@ export default function CaseInteraction({
               className={clsx(
                 "w-5 h-5",
                 selectedOption === null
-                  ? "text-slate-300 group-hover:text-medical-500"
+                  ? "text-muted-foreground/30 group-hover:text-medical-500"
                   : selectedOption === option.id
                   ? option.isCorrect
                     ? "text-green-600"
                     : "text-red-600"
-                  : "text-slate-300"
+                  : "text-muted-foreground/30"
               )}
             />
           </button>
@@ -175,7 +175,7 @@ export default function CaseInteraction({
                 </p>
                 <button
                   onClick={handleReset}
-                  className="px-6 py-3 bg-white border border-danger-200 text-danger-600 font-bold rounded-lg hover:bg-danger-50 transition-colors"
+                  className="px-6 py-3 bg-card border border-danger-200 text-danger-600 font-bold rounded-lg hover:bg-danger-50 transition-colors"
                 >
                   Try Again (Don&apos;t kill her this time)
                 </button>

@@ -1,78 +1,141 @@
-import { Heart, MessageCircle, Bookmark, Share2 } from "lucide-react";
+'use client';
 
-export default function BlogPostContent() {
+import { Heart, MessageCircle, Bookmark, Share2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import { useState, useEffect } from "react";
+import { togglePostLike, togglePostSave, incrementPostViews } from "@/app/actions/blog";
+import { cn } from "@/lib/utils";
+
+interface BlogPostContentProps {
+  content: string;
+  postId: string;
+  initialLikes: number;
+  initialIsLiked: boolean;
+  initialIsSaved: boolean;
+  commentsCount: number;
+}
+
+export default function BlogPostContent({ 
+  content, 
+  postId, 
+  initialLikes, 
+  initialIsLiked, 
+  initialIsSaved,
+  commentsCount
+}: BlogPostContentProps) {
+  const [likes, setLikes] = useState(initialLikes);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [isSaved, setIsSaved] = useState(initialIsSaved);
+  const [isLikeLoading, setIsLikeLoading] = useState(false);
+  const [isSaveLoading, setIsSaveLoading] = useState(false);
+
+  useEffect(() => {
+    incrementPostViews(postId);
+  }, [postId]);
+
+  const handleLike = async () => {
+    if (isLikeLoading) return;
+    setIsLikeLoading(true);
+    
+    // Optimistic update
+    const newIsLiked = !isLiked;
+    setIsLiked(newIsLiked);
+    setLikes(prev => newIsLiked ? prev + 1 : prev - 1);
+
+    try {
+      await togglePostLike(postId);
+    } catch (error) {
+      // Revert on error
+      setIsLiked(!newIsLiked);
+      setLikes(prev => !newIsLiked ? prev + 1 : prev - 1);
+      console.error("Failed to toggle like", error);
+    } finally {
+      setIsLikeLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (isSaveLoading) return;
+    setIsSaveLoading(true);
+
+    // Optimistic update
+    const newIsSaved = !isSaved;
+    setIsSaved(newIsSaved);
+
+    try {
+      await togglePostSave(postId);
+    } catch (error) {
+      // Revert on error
+      setIsSaved(!newIsSaved);
+      console.error("Failed to toggle save", error);
+    } finally {
+      setIsSaveLoading(false);
+    }
+  };
+
+  const scrollToComments = () => {
+    const commentsSection = document.getElementById('comments-section');
+    if (commentsSection) {
+      commentsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Content Body */}
-      <div className="prose prose-lg prose-slate max-w-none text-slate-600 mb-12">
-        <p>
-          Look, I love Evidence-Based Medicine (EBM) as much as the next nerd. I
-          memorize the p-values, I quote the Cochrane reviews at dinner parties
-          (which explains why I don&apos;t get invited back), and I scoff at anything
-          purely anecdotal. I wear the &quot;Trust Science&quot; badge with pride.
-        </p>
-        <p>
-          But let&apos;s be real for a second. We operate in the grey zone more often
-          than we&apos;d like to admit. The patient has Stage 4 renal failure, is 94
-          years old, and the specific guidelines for their condition excluded
-          anyone over 65 with a creatinine clearance under 30.
-        </p>
-
-        <h2>The Art of the &quot;Vibe Check&quot;</h2>
-
-        <p>
-          So what do we do? We use &quot;Clinical Judgement.&quot; It sounds prestigious.
-          It sounds like something you learn in a hallowed hall from a professor
-          with elbow patches.
-        </p>
-
-        <blockquote>
-          &quot;Clinical judgement is often just a polite way of saying &apos;I have a gut
-          feeling based on that one patient I saw in 2019 who didn&apos;t die when we
-          tried this&apos;.&quot;
-        </blockquote>
-
-        <p>
-          It&apos;s time we admit that pharmacokinetics is more art than science when
-          the Creatinine Clearance is oscillating like a techno beat at 3 AM. We
-          are making educated guesses. And that&apos;s okay. It&apos;s significantly
-          better than uneducated guesses.
-        </p>
-
-        <p>
-          The next time a resident asks you for the &quot;definitive&quot; dose for a
-          patient who is basically a biological anomaly, look them in the eye
-          and say: &quot;Let&apos;s start low and pray.&quot; That is clinical judgement.
-        </p>
+      <div className="prose prose-lg prose-slate dark:prose-invert max-w-none text-muted-foreground mb-12">
+        <ReactMarkdown>{content}</ReactMarkdown>
       </div>
 
       {/* Engagement / Actions */}
-      <div className="flex items-center justify-between border-t border-b border-slate-200 py-6 mb-12">
+      <div className="flex items-center justify-between border-t border-b border-border py-6 mb-12">
         <div className="flex gap-6">
-          <button className="flex items-center gap-2 text-slate-500 hover:text-red-500 transition-colors group">
-            <div className="p-2 rounded-full bg-slate-50 group-hover:bg-red-50 transition-colors">
-              <Heart className="w-5 h-5" />
+          <button 
+            onClick={handleLike}
+            disabled={isLikeLoading}
+            className={cn(
+              "flex items-center gap-2 transition-colors group",
+              isLiked ? "text-red-500" : "text-muted-foreground hover:text-red-500"
+            )}
+          >
+            <div className={cn(
+              "p-2 rounded-full transition-colors",
+              isLiked ? "bg-red-50 dark:bg-red-900/20" : "bg-muted group-hover:bg-red-50 dark:group-hover:bg-red-900/20"
+            )}>
+              <Heart className={cn("w-5 h-5", isLiked && "fill-current")} />
             </div>
-            <span className="font-medium">142 Likes</span>
+            <span className="font-medium">{likes} Likes</span>
           </button>
-          <button className="flex items-center gap-2 text-slate-500 hover:text-medical-600 transition-colors group">
-            <div className="p-2 rounded-full bg-slate-50 group-hover:bg-medical-50 transition-colors">
+          <button 
+            onClick={scrollToComments}
+            className="flex items-center gap-2 text-muted-foreground hover:text-medical-600 transition-colors group"
+          >
+            <div className="p-2 rounded-full bg-muted group-hover:bg-medical-50 dark:group-hover:bg-medical-900/20 transition-colors">
               <MessageCircle className="w-5 h-5" />
             </div>
-            <span className="font-medium">24 Comments</span>
+            <span className="font-medium">{commentsCount} Comments</span>
           </button>
         </div>
 
         <div className="flex gap-2">
           <button
-            className="p-2 text-slate-400 hover:text-medical-600 bg-slate-50 rounded-lg hover:bg-medical-50 transition-colors"
-            title="Bookmark"
+            onClick={handleSave}
+            disabled={isSaveLoading}
+            className={cn(
+              "p-2 rounded-lg transition-colors",
+              isSaved ? "text-medical-600 bg-medical-50 dark:bg-medical-900/20" : "text-muted-foreground hover:text-medical-600 bg-muted hover:bg-medical-50 dark:hover:bg-medical-900/20"
+            )}
+            title={isSaved ? "Saved" : "Save Post"}
           >
-            <Bookmark className="w-5 h-5" />
+            <Bookmark className={cn("w-5 h-5", isSaved && "fill-current")} />
           </button>
           <button
-            className="p-2 text-slate-400 hover:text-medical-600 bg-slate-50 rounded-lg hover:bg-medical-50 transition-colors"
+            className="p-2 text-muted-foreground hover:text-medical-600 bg-muted rounded-lg hover:bg-medical-50 dark:hover:bg-medical-900/20 transition-colors"
             title="Share"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              // Could add a toast here
+            }}
           >
             <Share2 className="w-5 h-5" />
           </button>

@@ -13,6 +13,16 @@ interface BlogCardProps {
   className?: string;
 }
 
+function stripMarkdown(text: string) {
+  return text
+    .replace(/!\[[^\]]*\]\([^\)]+\)/g, '') // Remove images
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Keep link text
+    .replace(/[*_`#]/g, '') // Remove special chars
+    .replace(/>\s*/g, '') // Remove blockquotes
+    .replace(/\n/g, ' ') // Replace newlines with spaces
+    .trim();
+}
+
 export default function BlogCard({
   title,
   description,
@@ -29,7 +39,7 @@ export default function BlogCard({
     <article
       onClick={onClick}
       className={clsx(
-        "group bg-white rounded-2xl overflow-hidden border border-slate-200 cursor-pointer transition-all duration-300 hover:border-medical-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] hover:-translate-y-1 animate-slide-up",
+        "group flex flex-col bg-card rounded-2xl border border-border shadow-sm hover:shadow-xl hover:border-primary/50 transition-all duration-300 overflow-hidden h-full cursor-pointer hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] hover:-translate-y-1 animate-slide-up",
         className
       )}
       style={{ animationDelay: delay }}
@@ -56,17 +66,17 @@ export default function BlogCard({
           ))}
         </div>
 
-        <h2 className="text-xl font-bold text-slate-900 mb-2 leading-tight group-hover:text-medical-600 transition-colors">
+        <h2 className="text-xl font-bold text-card-foreground mb-2 leading-tight group-hover:text-primary transition-colors">
           {title}
         </h2>
 
-        <p className="text-slate-500 text-sm line-clamp-2 mb-6">
-          {description}
+        <p className="text-muted-foreground text-sm line-clamp-2 mb-6">
+          {stripMarkdown(description)}
         </p>
 
         {/* Footer: Author */}
-        <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-          <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
+        <div className="flex items-center gap-3 pt-4 border-t border-border">
+          <div className="w-8 h-8 rounded-full bg-muted overflow-hidden">
             <img
               src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
               alt="Author"
@@ -74,8 +84,8 @@ export default function BlogCard({
             />
           </div>
           <div className="text-xs">
-            <p className="font-semibold text-slate-900">{author}</p>
-            <p className="text-slate-400">{role}</p>
+            <p className="font-semibold text-card-foreground">{author}</p>
+            <p className="text-muted-foreground">{role}</p>
           </div>
         </div>
       </div>

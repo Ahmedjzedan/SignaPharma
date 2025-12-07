@@ -9,7 +9,7 @@ export default function Hero() {
 
 
         {/* Headline */}
-          <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 leading-tight">
             Don&apos;t just memorize. <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-medical-600 to-teal-500">
               Master the meds.
@@ -17,7 +17,7 @@ export default function Hero() {
           </h1>
 
         {/* Subheadline */}
-        <p className="mt-4 text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
             The all-in-one platform for pharmacy students who want to crush their
             exams and actually understand what they&apos;re dispensing.
           </p>
@@ -34,7 +34,7 @@ export default function Hero() {
         </div>
 
         {/* Tech Stack Hint (For the Dev user) */}
-        <p className="mt-8 text-xs text-slate-400 font-mono">
+        <p className="mt-8 text-xs text-muted-foreground/60 font-mono">
           Powered by Caffeine & Drizzle ORM
         </p>
       </div>

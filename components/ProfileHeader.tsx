@@ -15,7 +15,7 @@ interface ProfileHeaderProps {
 
 export default function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
   return (
-    <div className="relative bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-8 animate-fade-in">
+    <div className="relative bg-card rounded-3xl border border-border shadow-sm overflow-hidden mb-8 animate-fade-in">
       {/* Cover Photo / Gradient */}
       <div className="h-32 sm:h-48 bg-gradient-to-r from-medical-600 to-indigo-600"></div>
 
@@ -24,7 +24,7 @@ export default function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
           {/* Profile Info */}
           <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 text-center sm:text-left">
             {/* Avatar */}
-            <div className="w-32 h-32 rounded-full border-4 border-white shadow-md overflow-hidden bg-slate-100 flex-shrink-0 relative group">
+            <div className="w-32 h-32 rounded-full border-4 border-background shadow-md overflow-hidden bg-muted flex-shrink-0 relative group">
               <img
                 src={user.avatar}
                 alt="Profile"
@@ -41,11 +41,11 @@ export default function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
 
             {/* Text Info */}
             <div className="mb-2">
-              <h1 className="text-3xl font-bold text-slate-900">{user.name}</h1>
+              <h1 className="text-3xl font-bold text-foreground">{user.name}</h1>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-1">
-                <span className="text-slate-500 font-medium">{user.title}</span>
-                <span className="hidden sm:inline text-slate-300">•</span>
-                <span className="text-slate-400 text-sm flex items-center gap-1">
+                <span className="text-muted-foreground font-medium">{user.title}</span>
+                <span className="hidden sm:inline text-muted-foreground/30">•</span>
+                <span className="text-muted-foreground text-sm flex items-center gap-1">
                   <MapPin className="w-3 h-3" /> {user.location}
                 </span>
               </div>
@@ -56,20 +56,20 @@ export default function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
           <div className="flex flex-col items-center sm:items-end gap-4 w-full sm:w-auto mb-2">
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <span className="block text-xs font-bold text-slate-400 uppercase">
+                <span className="block text-xs font-bold text-muted-foreground uppercase">
                   Level {user.level}
                 </span>
                 <span className="block text-xs text-medical-600 font-bold">
                   {user.xp.toLocaleString()} / {user.maxXp.toLocaleString()} XP
                 </span>
               </div>
-              <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold border-4 border-slate-100 shadow-sm ring-2 ring-medical-500">
+              <div className="w-12 h-12 rounded-full bg-foreground text-background flex items-center justify-center font-bold border-4 border-background shadow-sm ring-2 ring-medical-500">
                 {user.level}
               </div>
             </div>
             <button
               onClick={onEdit}
-              className="px-5 py-2 bg-white border border-slate-300 hover:border-medical-500 hover:text-medical-600 text-slate-700 font-semibold rounded-xl text-sm transition-all shadow-sm"
+              className="px-5 py-2 bg-background border border-input hover:border-medical-500 hover:text-medical-600 text-foreground font-semibold rounded-xl text-sm transition-all shadow-sm"
             >
               Edit Profile
             </button>

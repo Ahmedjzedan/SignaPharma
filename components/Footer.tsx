@@ -3,7 +3,7 @@ import { Pill, Twitter, Github, Linkedin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-slate-200 pt-16 pb-8">
+    <footer className="bg-background border-t border-border pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand Column */}
@@ -12,11 +12,11 @@ export default function Footer() {
               <div className="w-6 h-6 bg-medical-600 rounded flex items-center justify-center text-white">
                 <Pill className="w-3 h-3" />
               </div>
-              <span className="font-bold text-lg text-slate-900">
+              <span className="font-bold text-lg text-foreground">
                 SignaPharma
               </span>
             </div>
-            <p className="text-slate-500 text-sm leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               Making pharmacology bearable since 2024. Less cringe, more
               clinical impact.
             </p>
@@ -24,8 +24,8 @@ export default function Footer() {
 
           {/* Explore Column */}
           <div>
-            <h4 className="font-bold text-slate-900 mb-4">The Hub</h4>
-            <ul className="space-y-2 text-sm text-slate-600">
+            <h4 className="font-bold text-foreground mb-4">The Hub</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
                   href="/blog"
@@ -63,8 +63,8 @@ export default function Footer() {
 
           {/* Company Column */}
           <div>
-            <h4 className="font-bold text-slate-900 mb-4">Company</h4>
-            <ul className="space-y-2 text-sm text-slate-600">
+            <h4 className="font-bold text-foreground mb-4">Company</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
                   href="/about"
@@ -102,8 +102,8 @@ export default function Footer() {
 
           {/* Legal Column */}
           <div>
-            <h4 className="font-bold text-slate-900 mb-4">Legal & Stuff</h4>
-            <ul className="space-y-2 text-sm text-slate-600">
+            <h4 className="font-bold text-foreground mb-4">Legal & Stuff</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
                   href="/privacy"
@@ -132,19 +132,19 @@ export default function Footer() {
             <div className="mt-6 flex space-x-4">
               <Link
                 href="#"
-                className="text-slate-400 hover:text-medical-600 transition-colors"
+                className="text-muted-foreground hover:text-medical-600 transition-colors"
               >
                 <Twitter className="w-5 h-5" />
               </Link>
               <Link
                 href="https://github.com"
-                className="text-slate-400 hover:text-medical-600 transition-colors"
+                className="text-muted-foreground hover:text-medical-600 transition-colors"
               >
                 <Github className="w-5 h-5" />
               </Link>
               <Link
                 href="https://linkedin.com"
-                className="text-slate-400 hover:text-medical-600 transition-colors"
+                className="text-muted-foreground hover:text-medical-600 transition-colors"
               >
                 <Linkedin className="w-5 h-5" />
               </Link>
@@ -152,11 +152,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-400 text-sm">
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-muted-foreground/60 text-sm">
             © 2025 SignaPharma. Built with ☕ and Code by Ahmed.
           </p>
-          <div className="flex gap-6 text-sm text-slate-400">
+          <div className="flex gap-6 text-sm text-muted-foreground/60">
             <span className="text-xs font-mono">Build v2.0.4</span>
           </div>
         </div>
