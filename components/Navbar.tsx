@@ -13,7 +13,7 @@ export default function Navbar() {
   const isLoggedIn = !!session;
 
   return (
-    <nav className="fixed w-full z-50 glass transition-all duration-300">
+    <nav className="fixed w-full z-50 glass backdrop-blur-md transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
