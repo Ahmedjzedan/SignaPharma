@@ -18,11 +18,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 
-export default function ModuleStudyPage({
-  params,
-}: {
-  params: { subjectId: string };
-}) {
+export default function ModuleStudyPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
@@ -86,7 +82,7 @@ export default function ModuleStudyPage({
                 <span className="text-medical-600">The VIP Club</span>
               </h1>
               <p className="text-xl text-slate-500 leading-relaxed">
-                Welcome to the Glomerulus. It's basically a high-pressure coffee
+                Welcome to the Glomerulus. It&apos;s basically a high-pressure coffee
                 filter that decides what stays in your blood and what becomes...
                 well, you know.
               </p>
@@ -122,9 +118,9 @@ export default function ModuleStudyPage({
                   The Physics of Pee (Starling Forces)
                 </h3>
                 <p>
-                  Filtration isn't magic; it's a tug-of-war. The kidney filters{" "}
+                  Filtration isn&apos;t magic; it&apos;s a tug-of-war. The kidney filters{" "}
                   <strong>180 Liters</strong> of fluid a day. You only pee about
-                  1.5L. The rest is reabsorbed, or you'd dehydrate in 45
+                  1.5L. The rest is reabsorbed, or you&apos;d dehydrate in 45
                   minutes.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
@@ -158,7 +154,7 @@ export default function ModuleStudyPage({
                 </h3>
                 <p>
                   Your blood pressure changes constantly. If GFR fluctuated with
-                  every BP change, you'd either explode or stop making urine.
+                  every BP change, you&apos;d either explode or stop making urine.
                   The kidney prevents this via <strong>Autoregulation</strong>.
                 </p>
                 <ul className="space-y-4 mt-4 list-none pl-0">
@@ -208,7 +204,7 @@ export default function ModuleStudyPage({
                 </h2>
                 <p className="text-slate-300 mb-8 leading-relaxed">
                   Prove you understand GFR mechanics before moving on. The
-                  kidney doesn't forgive mistakes, and neither does the NAPLEX.
+                  kidney doesn&apos;t forgive mistakes, and neither does the NAPLEX.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">

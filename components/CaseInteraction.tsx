@@ -73,7 +73,7 @@ export default function CaseInteraction({
               {doctorName}
             </p>
             <h2 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">
-              "{prompt}"
+              &quot;{prompt}&quot;
             </h2>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function CaseInteraction({
                   {feedback.success.title}
                 </h3>
                 <p className="text-success-800 text-lg mb-4">
-                  "{feedback.success.message}"
+                  &quot;{feedback.success.message}&quot;
                 </p>
                 <button
                   onClick={onNext}
@@ -171,13 +171,13 @@ export default function CaseInteraction({
                   {feedback.fail.title}
                 </h3>
                 <p className="text-danger-800 text-lg mb-4">
-                  "{feedback.fail.message}"
+                  &quot;{feedback.fail.message}&quot;
                 </p>
                 <button
                   onClick={handleReset}
                   className="px-6 py-3 bg-white border border-danger-200 text-danger-600 font-bold rounded-lg hover:bg-danger-50 transition-colors"
                 >
-                  Try Again (Don't kill her this time)
+                  Try Again (Don&apos;t kill her this time)
                 </button>
               </div>
             </div>

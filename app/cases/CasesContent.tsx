@@ -1,0 +1,140 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import CaseHeader from "../../components/CaseHeader";
+import PatientChart from "../../components/PatientChart";
+import CaseInteraction from "../../components/CaseInteraction";
+
+// Define types for the parsed JSON data
+interface PatientData {
+  name: string;
+  dob: string;
+  age: number;
+  allergy: string;
+  vitals: {
+    hr: number;
+    bp: string;
+    temp: number;
+  };
+  history: {
+    hpi: string;
+    pmh: string[];
+    meds: string[];
+  };
+  progress: {
+    current: number;
+    total: number;
+  };
+}
+
+interface ScenarioData {
+  doctorImage: string;
+  doctorName: string;
+  prompt: string;
+}
+
+interface QuizOption {
+  id: string;
+  label: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+interface QuizData {
+  options: QuizOption[];
+  feedback: {
+    success: { title: string; message: string };
+    fail: { title: string; message: string };
+  };
+}
+
+export interface Case {
+  id: string;
+  title: string;
+  isUrgent: boolean; // Derived or stored
+  patient: PatientData;
+  scenario: ScenarioData;
+  quiz: QuizData;
+}
+
+interface CasesContentProps {
+  initialCase: Case;
+}
+
+export default function CasesContent({ initialCase }: CasesContentProps) {
+  const [elo, setElo] = useState(1500);
+  const [eloChange, setEloChange] = useState<number | null>(null);
+  const [caseAttempted, setCaseAttempted] = useState(false);
+  // In a real app with multiple cases, we'd have state to switch cases.
+  // For now, we just display the one passed in.
+  const [currentCase, setCurrentCase] = useState<Case>(initialCase);
+
+  useEffect(() => {
+    const storedElo = localStorage.getItem("signapharma_elo");
+    if (storedElo) {
+      setElo(parseInt(storedElo, 10));
+    }
+  }, []);
+
+  const handleComplete = (isCorrect: boolean) => {
+    if (caseAttempted) return;
+
+    const change = isCorrect ? 12 : -12;
+    const newElo = elo + change;
+
+    setElo(newElo);
+    setEloChange(change);
+    setCaseAttempted(true);
+    localStorage.setItem("signapharma_elo", newElo.toString());
+  };
+
+  const handleReset = () => {
+    setEloChange(null);
+    // We don't reset caseAttempted here to prevent ELO farming on the same case instance
+  };
+
+  const handleNext = () => {
+    // In a full implementation, this would trigger a server action or router refresh to get a new case.
+    // For this demo, we'll just reload the page to fetch a random case again (if logic supports it)
+    // or just reset the UI state if we had a list of cases.
+    window.location.reload();
+  };
+
+  return (
+    <>
+      <Navbar />
+      <main className="flex-grow pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <CaseHeader
+          caseId={currentCase.id}
+          isUrgent={currentCase.isUrgent}
+          title={currentCase.title}
+          elo={elo}
+          eloChange={eloChange}
+        />
+
+        <div className="flex flex-col lg:flex-row gap-8 min-h-[80vh]">
+          <PatientChart
+            patient={currentCase.patient}
+            vitals={currentCase.patient.vitals}
+            history={currentCase.patient.history}
+            progress={currentCase.patient.progress}
+          />
+
+          <CaseInteraction
+            doctorImage={currentCase.scenario.doctorImage}
+            doctorName={currentCase.scenario.doctorName}
+            prompt={currentCase.scenario.prompt}
+            options={currentCase.quiz.options}
+            feedback={currentCase.quiz.feedback}
+            onComplete={handleComplete}
+            onReset={handleReset}
+            onNext={handleNext}
+          />
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}

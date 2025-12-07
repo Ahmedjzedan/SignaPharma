@@ -32,7 +32,7 @@ const initialSavedPosts: SavedPost[] = [
     id: "2",
     title: "Night Shift Survival Guide: Caffeine & Spite",
     excerpt:
-      "How to maintain a circadian rhythm when your body thinks it's dying.",
+      "How to maintain a circadian rhythm when your body thinks it&apos;s dying.",
     author: "Jess Chen",
     authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica",
     readTime: "5 min read",
@@ -69,7 +69,7 @@ export default function SavedRantsGrid() {
           Nothing to see here
         </h2>
         <p className="text-slate-500 max-w-md mb-8">
-          You haven't saved anything. Do you even read, or do you just scroll
+          You haven&apos;t saved anything. Do you even read, or do you just scroll
           looking for pictures?
         </p>
         <Link

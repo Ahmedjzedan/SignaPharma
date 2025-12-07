@@ -44,7 +44,7 @@ export default function BlogPostComments() {
               <span className="text-xs text-slate-400">2h ago</span>
             </div>
             <p className="text-slate-600 text-sm leading-relaxed mb-2">
-              I feel attacked. But also, you're absolutely right. Vancomycin
+              I feel attacked. But also, you&apos;re absolutely right. Vancomycin
               dosing in the ICU is basically just witchcraft with a calculator.
             </p>
             <div className="flex items-center gap-4 text-xs font-medium text-slate-400">
@@ -68,7 +68,7 @@ export default function BlogPostComments() {
             </div>
             <p className="text-slate-600 text-sm leading-relaxed mb-2">
               Guidelines are suggestions. The patient is the reality. If we
-              followed every guideline perfectly, we'd never get anything done.
+              followed every guideline perfectly, we&apos;d never get anything done.
             </p>
             <div className="flex items-center gap-4 text-xs font-medium text-slate-400">
               <button className="hover:text-medical-600 flex items-center gap-1">

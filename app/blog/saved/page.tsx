@@ -22,8 +22,8 @@ export default function SavedRantsPage() {
               </span>
             </div>
             <p className="text-slate-500">
-              Articles you promised yourself you'd read "when you have time."
-              (Spoiler: You won't).
+              Articles you promised yourself you&apos;d read &quot;when you have time.&quot;
+              (Spoiler: You won&apos;t).
             </p>
           </div>
 

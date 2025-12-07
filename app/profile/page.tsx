@@ -30,6 +30,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const storedElo = localStorage.getItem("signapharma_elo");
     if (storedElo) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStats((prev) => ({ ...prev, elo: parseInt(storedElo, 10) }));
     }
   }, []);

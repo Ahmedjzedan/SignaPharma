@@ -21,7 +21,7 @@ export default function LibraryHeader({ stats, onAddDrug }: LibraryHeaderProps) 
           </h1>
           <p className="text-slate-500 mt-2">
             Manage your personal formulary. Master 50 drugs to unlock the
-            "Walking Lexicomp" badge.
+            &quot;Walking Lexicomp&quot; badge.
           </p>
         </div>
 

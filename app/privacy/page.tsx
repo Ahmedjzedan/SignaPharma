@@ -15,7 +15,7 @@ export default function PrivacyPage() {
           </p>
           <p>
             At SignaPharma, we take your privacy seriously. We understand that
-            you're here to learn pharmacology, not to have your data sold. This
+            you&apos;re here to learn pharmacology, not to have your data sold. This
             Privacy Policy explains how we collect, use, and protect your
             information.
           </p>

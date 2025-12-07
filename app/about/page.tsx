@@ -51,8 +51,8 @@ export default function AboutPage() {
               </p>
               <p>
                 Why build SignaPharma? Because I looked at the current state of
-                pharmacy study tools and thought, "I can fix this, or I can
-                complain about it." I chose to fix it. I trade sleep for syntax
+                pharmacy study tools and thought, &quot;I can fix this, or I can
+                complain about it.&quot; I chose to fix it. I trade sleep for syntax
                 to build tools that actually work for students like us.
               </p>
               <p className="font-medium text-medical-700">

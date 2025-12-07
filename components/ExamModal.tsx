@@ -15,22 +15,21 @@ export default function ExamModal({
   const [timeLeft, setTimeLeft] = useState(10);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTimeLeft(10);
-      return;
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
     }
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
   }, [isOpen]);
 
   if (!isOpen) return null;

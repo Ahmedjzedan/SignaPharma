@@ -68,7 +68,7 @@ export default function Features() {
             </h3>
             <p className="text-slate-600 leading-relaxed">
               Build your digital drug cabinet. Save your favorite monographs and
-              interaction checkers. It's like Pokémon, but for drugs.
+              interaction checkers. It&apos;s like Pokémon, but for drugs.
             </p>
             <div className="mt-6 flex items-center text-teal-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
               Browse DB <ArrowRight className="w-4 h-4 ml-1" />

@@ -12,19 +12,18 @@ export default function Hero() {
         </div>
 
         {/* Headline */}
-        <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-6">
-          The Pharmacist's Hub <br className="hidden md:block" />
-          of{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-medical-600 to-cyan-500">
-            Achievement
-          </span>
-        </h1>
+          <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
+            Don&apos;t just memorize. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-medical-600 to-teal-500">
+              Master the meds.
+            </span>
+          </h1>
 
         {/* Subheadline */}
-        <p className="mt-4 max-w-2xl mx-auto text-xl text-slate-600 mb-10 leading-relaxed">
-          Stop studying like it's 1999. Use the tool built for the modern
-          clinical brain. Less fluff, more pharmacology.
-        </p>
+        <p className="mt-4 text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            The all-in-one platform for pharmacy students who want to crush their
+            exams and actually understand what they&apos;re dispensing.
+          </p>
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-4">

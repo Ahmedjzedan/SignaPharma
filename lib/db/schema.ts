@@ -1,19 +1,66 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
 // Users
 export const users = sqliteTable('users', {
-  id: text('id').primaryKey(), // UUID or similar
-  name: text('name').notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text('name'),
   email: text('email').notNull().unique(),
-  avatar: text('avatar'),
-  bio: text('bio'),
+  emailVerified: integer('emailVerified', { mode: 'timestamp_ms' }),
+  image: text('image'),
   role: text('role').default('student'), // student, pharmacist, admin
   xp: integer('xp').default(0),
   streak: integer('streak').default(0),
   rank: text('rank').default('Novice'),
+  bio: text('bio'),
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
+
+export const accounts = sqliteTable(
+  "account",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+  },
+  (account) => ({
+    compoundKey: primaryKey({
+      columns: [account.provider, account.providerAccountId],
+    }),
+  })
+);
+
+export const sessions = sqliteTable("session", {
+  sessionToken: text("sessionToken").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+});
+
+export const verificationTokens = sqliteTable(
+  "verificationToken",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+  },
+  (verificationToken) => ({
+    compositePk: primaryKey({
+      columns: [verificationToken.identifier, verificationToken.token],
+    }),
+  })
+);
 
 // Drugs (Library)
 export const drugs = sqliteTable('drugs', {
@@ -88,4 +135,19 @@ export const quizResults = sqliteTable('quiz_results', {
   quizId: text('quiz_id').references(() => quizzes.id),
   score: integer('score').notNull(),
   completedAt: integer('completed_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+});
+
+// Cases
+export const cases = sqliteTable('cases', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  difficulty: integer('difficulty').notNull(), // ELO rating
+  category: text('category').notNull(),
+  pattern: text('pattern'), // e.g., "Hypotension", "Toxidrome"
+  medicines: text('medicines'), // JSON array of related drugs
+  patientData: text('patient_data').notNull(), // JSON object: { name, dob, age, allergy, vitals: {}, history: {} }
+  scenario: text('scenario').notNull(), // JSON object: { doctorName, doctorImage, prompt }
+  quiz: text('quiz').notNull(), // JSON object: { options: [], feedback: {} }
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });

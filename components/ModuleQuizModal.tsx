@@ -35,23 +35,7 @@ export default function ModuleQuizModal({
     }, 1000);
   };
 
-  const getButtonClass = (questionNum: number, isCorrectOption: boolean) => {
-    const answer = answers[questionNum];
-    if (answer === null)
-      return "border-slate-100 hover:border-slate-300 hover:bg-slate-50";
 
-    if (isCorrectOption) {
-      // If this option is correct, and the user selected it (or we just want to show the correct answer)
-      return answer === true
-        ? "bg-green-50 border-green-500 text-green-700"
-        : "border-slate-100 opacity-50";
-    } else {
-      // If this option is incorrect
-      return answer === false
-        ? "bg-red-50 border-red-500 text-red-700"
-        : "border-slate-100 opacity-50";
-    }
-  };
 
   return (
     <div
@@ -175,7 +159,7 @@ export default function ModuleQuizModal({
                   }`}
                   disabled={answers[2] !== null}
                 >
-                  Bowman's Space Pressure
+                  Bowman&apos;s Space Pressure
                 </button>
                 <button
                   onClick={() => handleAnswer(2, true)}

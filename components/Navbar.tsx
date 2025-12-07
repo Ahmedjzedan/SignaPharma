@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Pill, Menu, X } from "lucide-react";
+import { Pill, Menu, X, LogOut } from "lucide-react";
 import clsx from "clsx";
+
+import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // Mock auth state - in a real app this would come from a context or hook
-  const isLoggedIn = true;
+  const { data: session } = useSession();
+  const isLoggedIn = !!session;
 
   return (
     <nav className="fixed w-full z-50 glass transition-all duration-300">
@@ -56,21 +58,33 @@ export default function Navbar() {
 
             {/* Auth Section */}
             {isLoggedIn ? (
-              <Link
-                href="/profile"
-                className="flex items-center gap-2 pl-4 border-l border-slate-200"
-              >
-                <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-transparent hover:ring-medical-500 transition-all">
-                  <img
-                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=House"
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <span className="text-sm font-medium text-slate-700 hidden lg:block">
-                  Dr. House
-                </span>
-              </Link>
+              <div className="flex items-center gap-4 pl-4 border-l border-slate-200">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-transparent group-hover:ring-medical-500 transition-all">
+                    <img
+                      src={
+                        session?.user?.image ||
+                        "https://api.dicebear.com/7.x/avataaars/svg?seed=House"
+                      }
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-sm font-medium text-slate-700 hidden lg:block group-hover:text-medical-600 transition-colors">
+                    {session?.user?.name || "Dr. House"}
+                  </span>
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+                  title="Log Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
             ) : (
               <Link
                 href="/auth"
@@ -129,14 +143,22 @@ export default function Navbar() {
           >
             Study
           </Link>
-          <div className="pt-4">
+          <div className="pt-4 space-y-2">
             {isLoggedIn ? (
-              <Link
-                href="/profile"
-                className="block px-3 py-2 rounded-md text-base font-medium text-medical-600 bg-medical-50 font-bold"
-              >
-                My Profile
-              </Link>
+              <>
+                <Link
+                  href="/profile"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-medical-600 bg-medical-50 font-bold"
+                >
+                  My Profile
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-500 hover:bg-red-50 flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> Log Out
+                </button>
+              </>
             ) : (
               <Link
                 href="/auth"
