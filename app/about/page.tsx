@@ -17,17 +17,17 @@ export default function AboutPage() {
           <div className="prose prose-lg text-slate-600 max-w-3xl">
             <p>
               I’m a pharmacy student who realized that memorizing drug
-              interactions is hard enough without fighting outdated software.
-              While my peers were purely focused on clinical rotations, I was
-              also deep in Next.js and SQL, looking for a better way to
-              structure medical data.
+              interactions is hard enough without fighting software that looks like 
+              it was built in 1998. Instead of actually studying for my exams, 
+              I procrastinated by building this entire platform. It&apos;s basically a 
+              very elaborate way to avoid reading my textbooks.
             </p>
             <p>
-              SignaPharma is the result of that collision. It’s built on a
-              modern tech stack because I believe healthcare education deserves
-              the same speed and efficiency as the apps we use every day. I
-              built this platform to be the tool I wish I had—bridging the gap
-              between complex pharmacology and intuitive design.
+              SignaPharma is the result of excessive caffeine and a refusal to use 
+              boring flashcards. It’s built on a modern tech stack because I believe 
+              healthcare education shouldn&apos;t feel like a punishment. I built this 
+              tool so I could learn pharmacology without falling asleep, and hopefully, 
+              it helps you too.
             </p>
           </div>
         </div>
@@ -56,9 +56,8 @@ export default function AboutPage() {
                 to build tools that actually work for students like us.
               </p>
               <p className="font-medium text-medical-700">
-                No cringe corporate speak here—just a pharmacy student using
-                Tailwind and Type Safety to make sure you actually pass your
-                boards.
+                No corporate buzzwords here. Just a pharmacy student who spent way 
+                too much time centering divs instead of memorizing doses.
               </p>
             </div>
           </div>
