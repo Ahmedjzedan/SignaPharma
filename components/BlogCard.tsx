@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { stripMarkdown } from "@/lib/utils";
 
 interface BlogCardProps {
   title: string;
@@ -11,16 +12,6 @@ interface BlogCardProps {
   delay: string;
   onClick?: () => void;
   className?: string;
-}
-
-function stripMarkdown(text: string) {
-  return text
-    .replace(/!\[[^\]]*\]\([^\)]+\)/g, '') // Remove images
-    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Keep link text
-    .replace(/[*_`#]/g, '') // Remove special chars
-    .replace(/>\s*/g, '') // Remove blockquotes
-    .replace(/\n/g, ' ') // Replace newlines with spaces
-    .trim();
 }
 
 export default function BlogCard({

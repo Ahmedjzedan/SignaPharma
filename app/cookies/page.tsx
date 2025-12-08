@@ -8,8 +8,8 @@ export default function CookiePolicyPage() {
     <>
       <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
-        <div className="prose prose-slate prose-lg max-w-none">
-          <h1>Cookie Policy</h1>
+        <div className="prose prose-slate dark:prose-invert prose-lg max-w-none dark:prose-headings:text-white dark:prose-p:text-muted-foreground dark:prose-strong:text-white dark:prose-li:text-muted-foreground">
+          <h1 className="text-foreground">Cookie Policy</h1>
           <p className="lead">
             Last updated: {new Date().getFullYear()}
           </p>
@@ -20,7 +20,7 @@ export default function CookiePolicyPage() {
             your rights to control our use of them.
           </p>
 
-          <h2>1. What are cookies?</h2>
+          <h2 className="text-foreground">1. What are cookies?</h2>
           <p>
             Cookies are small data files that are placed on your computer or
             mobile device when you visit a website. Cookies are widely used by
@@ -28,7 +28,7 @@ export default function CookiePolicyPage() {
             efficiently, as well as to provide reporting information.
           </p>
 
-          <h2>2. Why do we use cookies?</h2>
+          <h2 className="text-foreground">2. Why do we use cookies?</h2>
           <p>
             We use cookies for several reasons. Some cookies are required for
             technical reasons in order for our website to operate, and we refer
@@ -37,7 +37,7 @@ export default function CookiePolicyPage() {
             users to enhance the experience on our Online Properties.
           </p>
 
-          <h2>3. Types of Cookies We Use</h2>
+          <h2 className="text-foreground">3. Types of Cookies We Use</h2>
           <ul>
             <li>
               <strong>Essential Cookies:</strong> These cookies are strictly
@@ -61,7 +61,7 @@ export default function CookiePolicyPage() {
             </li>
           </ul>
 
-          <h2>4. How can I control cookies?</h2>
+          <h2 className="text-foreground">4. How can I control cookies?</h2>
           <p>
             You have the right to decide whether to accept or reject cookies.
             You can exercise your cookie rights by setting your browser controls
@@ -70,7 +70,7 @@ export default function CookiePolicyPage() {
             and areas of our website may be restricted.
           </p>
 
-          <h2>5. Updates to this Policy</h2>
+          <h2 className="text-foreground">5. Updates to this Policy</h2>
           <p>
             We may update this Cookie Policy from time to time in order to
             reflect, for example, changes to the cookies we use or for other
@@ -79,7 +79,7 @@ export default function CookiePolicyPage() {
             cookies and related technologies.
           </p>
 
-          <h2>6. Contact Us</h2>
+          <h2 className="text-foreground">6. Contact Us</h2>
           <p>
             If you have any questions about our use of cookies or other
             technologies, please contact us.

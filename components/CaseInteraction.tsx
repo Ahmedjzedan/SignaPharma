@@ -92,8 +92,8 @@ export default function CaseInteraction({
                 ? "border-border bg-card hover:border-medical-500 hover:bg-medical-50 dark:hover:bg-medical-900/20"
                 : selectedOption === option.id
                 ? option.isCorrect
-                  ? "bg-green-50 border-green-500 text-green-800"
-                  : "bg-red-50 border-red-500 text-red-800"
+                  ? "bg-green-50 dark:bg-green-900/20 border-green-500 text-green-800 dark:text-green-200"
+                  : "bg-red-50 dark:bg-red-900/20 border-red-500 text-red-800 dark:text-red-200"
                 : "opacity-50 cursor-not-allowed border-border bg-card"
             )}
           >
@@ -105,8 +105,8 @@ export default function CaseInteraction({
                     ? "text-muted-foreground group-hover:text-medical-500"
                     : selectedOption === option.id
                     ? option.isCorrect
-                      ? "text-green-600"
-                      : "text-red-600"
+                      ? "text-green-600 dark:text-green-400"
+                      : "text-red-600 dark:text-red-400"
                     : "text-muted-foreground"
                 )}
               >
@@ -123,8 +123,8 @@ export default function CaseInteraction({
                   ? "text-muted-foreground/30 group-hover:text-medical-500"
                   : selectedOption === option.id
                   ? option.isCorrect
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? "text-green-600 dark:text-green-400"
+                    : "text-red-600 dark:text-red-400"
                   : "text-muted-foreground/30"
               )}
             />
@@ -135,21 +135,21 @@ export default function CaseInteraction({
       {/* FEEDBACK STATES */}
       {isCorrect === true && (
         <div className="mt-8 animate-pop-in">
-          <div className="bg-success-50 border-l-4 border-success-500 p-6 rounded-r-xl shadow-sm">
+          <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-6 rounded-r-xl shadow-sm">
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-success-100 rounded-full text-success-600">
+              <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded-full text-green-600 dark:text-green-400">
                 <CheckCircle className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-success-800 mb-2">
+                <h3 className="text-xl font-bold text-green-800 dark:text-green-200 mb-2">
                   {feedback.success.title}
                 </h3>
-                <p className="text-success-800 text-lg mb-4">
+                <p className="text-green-800 dark:text-green-200 text-lg mb-4">
                   &quot;{feedback.success.message}&quot;
                 </p>
                 <button
                   onClick={onNext}
-                  className="px-6 py-3 bg-success-600 hover:bg-success-700 text-white font-bold rounded-lg transition-colors shadow-md flex items-center"
+                  className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors shadow-md flex items-center"
                 >
                   Next Case <ArrowRight className="w-4 h-4 ml-1" />
                 </button>
@@ -161,21 +161,21 @@ export default function CaseInteraction({
 
       {isCorrect === false && (
         <div className="mt-8 animate-shake">
-          <div className="bg-danger-50 border-l-4 border-danger-500 p-6 rounded-r-xl shadow-sm">
+          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-6 rounded-r-xl shadow-sm">
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-danger-100 rounded-full text-danger-600">
+              <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-full text-red-600 dark:text-red-400">
                 <Skull className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-danger-800 mb-2">
+                <h3 className="text-xl font-bold text-red-800 dark:text-red-200 mb-2">
                   {feedback.fail.title}
                 </h3>
-                <p className="text-danger-800 text-lg mb-4">
+                <p className="text-red-800 dark:text-red-200 text-lg mb-4">
                   &quot;{feedback.fail.message}&quot;
                 </p>
                 <button
                   onClick={handleReset}
-                  className="px-6 py-3 bg-card border border-danger-200 text-danger-600 font-bold rounded-lg hover:bg-danger-50 transition-colors"
+                  className="px-6 py-3 bg-card border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                 >
                   Try Again (Don&apos;t kill her this time)
                 </button>

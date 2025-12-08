@@ -1,15 +1,43 @@
 "use client";
 
 import { Search, Filter } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BlogFilterModal from "./BlogFilterModal";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useDebounce } from "use-debounce";
 
 export default function BlogHeader() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
+  const [debouncedSearch] = useDebounce(searchTerm, 500);
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (debouncedSearch) {
+      params.set("search", debouncedSearch);
+    } else {
+      params.delete("search");
+    }
+    router.push(`?${params.toString()}`);
+  }, [debouncedSearch, router]);
 
   const handleApplyFilters = (filters: any) => {
-    console.log("Filters applied:", filters);
-    // In a real app, this would update the URL query params or trigger a re-fetch
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (filters.category && filters.category !== "All") {
+      params.set("category", filters.category);
+    } else {
+      params.delete("category");
+    }
+
+    if (filters.sortBy) {
+      params.set("sortBy", filters.sortBy);
+    }
+
+    router.push(`?${params.toString()}`);
   };
 
   return (
@@ -28,6 +56,8 @@ export default function BlogHeader() {
           <input
             type="text"
             placeholder="Search rants..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-all"
           />
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />

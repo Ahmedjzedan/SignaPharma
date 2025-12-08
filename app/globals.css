@@ -257,9 +257,14 @@ body {
 }
 
 /* Typography overrides */
+.prose h1 {
+  color: hsl(var(--foreground));
+  font-weight: 800;
+}
+
 .prose h2 {
   font-weight: 700;
-  color: #0f172a;
+  color: hsl(var(--foreground));
   margin-top: 2em;
   margin-bottom: 1em;
   font-size: 1.5rem;
@@ -273,10 +278,10 @@ body {
 
 .prose blockquote {
   font-style: italic;
-  border-left: 4px solid #2563eb;
+  border-left: 4px solid hsl(var(--primary));
   padding-left: 1rem;
-  color: #334155;
-  background: #f1f5f9;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted));
   padding: 1rem;
   border-radius: 0 0.5rem 0.5rem 0;
   margin: 2rem 0;

@@ -85,8 +85,7 @@ export default function EditBlogForm({ post }: EditBlogFormProps) {
 
   return (
     <div className="bg-card/80 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-border shadow-2xl relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-medical-100/50 rounded-full blur-3xl -mr-16 -mt-16 -z-10" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-100/50 rounded-full blur-3xl -ml-16 -mb-16 -z-10" />
+
 
       <div className="mb-10 text-center">
         <h1 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">

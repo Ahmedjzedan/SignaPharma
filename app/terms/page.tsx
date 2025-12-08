@@ -8,8 +8,8 @@ export default function TermsPage() {
     <>
       <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
-        <div className="prose prose-slate prose-lg max-w-none">
-          <h1>Terms of Service</h1>
+        <div className="prose prose-slate dark:prose-invert prose-lg max-w-none dark:prose-headings:text-white dark:prose-p:text-muted-foreground dark:prose-strong:text-white dark:prose-li:text-muted-foreground">
+          <h1 className="text-foreground">Terms of Service</h1>
           <p className="lead">
             Last updated: {new Date().getFullYear()}
           </p>
@@ -19,7 +19,7 @@ export default function TermsPage() {
             terms, please do not use our services.
           </p>
 
-          <h2>1. Educational Purpose</h2>
+          <h2 className="text-foreground">1. Educational Purpose</h2>
           <p>
             SignaPharma is an educational tool designed for pharmacy students.
             The content provided is for study purposes only and should not be
@@ -28,7 +28,7 @@ export default function TermsPage() {
             clinical decision-making.
           </p>
 
-          <h2>2. User Accounts</h2>
+          <h2 className="text-foreground">2. User Accounts</h2>
           <p>
             You are responsible for maintaining the confidentiality of your
             account credentials and for all activities that occur under your
@@ -36,7 +36,7 @@ export default function TermsPage() {
             of your account.
           </p>
 
-          <h2>3. Intellectual Property</h2>
+          <h2 className="text-foreground">3. Intellectual Property</h2>
           <p>
             All content, features, and functionality of SignaPharma, including
             but not limited to text, graphics, logos, and software, are the
@@ -44,7 +44,7 @@ export default function TermsPage() {
             trademark, and other intellectual property laws.
           </p>
 
-          <h2>4. Prohibited Conduct</h2>
+          <h2 className="text-foreground">4. Prohibited Conduct</h2>
           <p>
             You agree not to use SignaPharma for any unlawful purpose or in any
             way that could damage, disable, overburden, or impair our servers or
@@ -52,21 +52,21 @@ export default function TermsPage() {
             to any part of our services.
           </p>
 
-          <h2>5. Limitation of Liability</h2>
+          <h2 className="text-foreground">5. Limitation of Liability</h2>
           <p>
             In no event shall SignaPharma be liable for any indirect,
             incidental, special, consequential, or punitive damages arising out
             of or related to your use of our services.
           </p>
 
-          <h2>6. Changes to Terms</h2>
+          <h2 className="text-foreground">6. Changes to Terms</h2>
           <p>
             We reserve the right to modify these Terms of Service at any time.
             We will notify you of any material changes by posting the new Terms
             on this page.
           </p>
 
-          <h2>7. Contact Us</h2>
+          <h2 className="text-foreground">7. Contact Us</h2>
           <p>
             If you have any questions about these Terms of Service, please
             contact us.

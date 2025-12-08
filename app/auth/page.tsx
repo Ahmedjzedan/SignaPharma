@@ -28,14 +28,14 @@ export default function AuthPage() {
             <div className="w-10 h-10 bg-medical-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-medical-600/30 transition-transform group-hover:scale-105">
               <Pill className="w-6 h-6" />
             </div>
-            <span className="font-bold text-2xl tracking-tight text-slate-900">
+            <span className="font-bold text-2xl tracking-tight text-foreground">
               SignaPharma
             </span>
           </Link>
-          <h1 className="text-3xl font-bold text-slate-900">
+          <h1 className="text-3xl font-bold text-foreground">
             {isSignUp ? "Create Account" : "Welcome Back"}
           </h1>
-          <p className="text-slate-500 mt-2">
+          <p className="text-muted-foreground mt-2">
             {isSignUp
               ? "Join the hub for pharmacists."
               : "Enter your credentials to access the hub."}
@@ -43,14 +43,14 @@ export default function AuthPage() {
         </div>
 
         {/* Glass Card Container */}
-        <div className="glass-card rounded-3xl p-8 sm:p-10">
+        <div className="glass-card rounded-3xl p-8 sm:p-10 border border-border bg-card/50 backdrop-blur-xl shadow-2xl">
           <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
             {/* Name Field (Hidden by default for Sign In) */}
             {isSignUp && (
               <div className="space-y-1 animate-fade-in">
                 <label
                   htmlFor="name"
-                  className="text-sm font-medium text-slate-700"
+                  className="text-sm font-medium text-foreground"
                 >
                   Full Name
                 </label>
@@ -59,9 +59,9 @@ export default function AuthPage() {
                     type="text"
                     id="name"
                     placeholder="Dr. House"
-                    className="w-full pl-10 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all placeholder:text-slate-400 text-sm"
+                    className="w-full pl-10 pr-4 py-3 bg-secondary/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-muted-foreground text-sm text-foreground"
                   />
-                  <User className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
+                  <User className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
                 </div>
               </div>
             )}
@@ -70,7 +70,7 @@ export default function AuthPage() {
             <div className="space-y-1">
               <label
                 htmlFor="email"
-                className="text-sm font-medium text-slate-700"
+                className="text-sm font-medium text-foreground"
               >
                 Email Address
               </label>
@@ -79,10 +79,10 @@ export default function AuthPage() {
                   type="email"
                   id="email"
                   placeholder="pharmacist@example.com"
-                  className="w-full pl-10 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all placeholder:text-slate-400 text-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-secondary/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-muted-foreground text-sm text-foreground"
                   required
                 />
-                <Mail className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
+                <Mail className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
               </div>
             </div>
 
@@ -91,14 +91,14 @@ export default function AuthPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="password"
-                  className="text-sm font-medium text-slate-700"
+                  className="text-sm font-medium text-foreground"
                 >
                   Password
                 </label>
                 {!isSignUp && (
                   <a
                     href="#"
-                    className="text-xs font-medium text-medical-600 hover:text-medical-700"
+                    className="text-xs font-medium text-primary hover:text-primary/80"
                   >
                     Forgot?
                   </a>
@@ -109,21 +109,21 @@ export default function AuthPage() {
                   type="password"
                   id="password"
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all placeholder:text-slate-400 text-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-secondary/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-muted-foreground text-sm text-foreground"
                   required
                 />
-                <Lock className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
+                <Lock className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
               </div>
             </div>
 
             {/* Social Auth Row (Expanding Logos) */}
             <div className="pt-2">
               <div className="relative flex py-2 items-center">
-                <div className="flex-grow border-t border-slate-200"></div>
-                <span className="flex-shrink-0 mx-4 text-slate-400 text-xs uppercase font-bold tracking-wider">
+                <div className="flex-grow border-t border-border"></div>
+                <span className="flex-shrink-0 mx-4 text-muted-foreground text-xs uppercase font-bold tracking-wider">
                   Or continue with
                 </span>
-                <div className="flex-grow border-t border-slate-200"></div>
+                <div className="flex-grow border-t border-border"></div>
               </div>
 
               <div className="flex gap-4 mt-2 justify-center">
@@ -131,7 +131,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => signIn("google", { callbackUrl: "/" })}
-                  className="group flex items-center justify-center gap-0 hover:gap-3 bg-white border border-slate-200 hover:border-slate-300 text-slate-600 p-3 rounded-xl transition-all duration-300 hover:w-36 hover:bg-slate-50 w-12 h-12 overflow-hidden shadow-sm"
+                  className="group flex items-center justify-center gap-0 hover:gap-3 bg-card border border-border hover:border-primary/50 text-foreground p-3 rounded-xl transition-all duration-300 hover:w-36 hover:bg-accent w-12 h-12 overflow-hidden shadow-sm"
                 >
                   <svg
                     className="w-5 h-5 flex-shrink-0"
@@ -181,18 +181,18 @@ export default function AuthPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-medical-600 hover:bg-medical-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-medical-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-medical-600"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3.5 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
               {isSignUp ? "Sign Up" : "Sign In"}
             </button>
           </form>
 
           {/* Toggle Auth Mode */}
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             {isSignUp ? "Already have an account?" : "Don't have an account?"}
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="font-semibold text-medical-600 hover:text-medical-700 ml-1 focus:outline-none underline-offset-2 hover:underline"
+              className="font-semibold text-primary hover:text-primary/80 ml-1 focus:outline-none underline-offset-2 hover:underline"
             >
               {isSignUp ? "Sign in" : "Sign up"}
             </button>
@@ -203,7 +203,7 @@ export default function AuthPage() {
         <div className="mt-8 text-center">
           <Link
             href="/"
-            className="text-xs text-slate-400 hover:text-slate-600 transition-colors inline-flex items-center gap-1"
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
           >
             <ArrowLeft className="w-3 h-3" /> Back to Homepage
           </Link>

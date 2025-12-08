@@ -1,8 +1,7 @@
-"use client";
-
+import { createPortal } from "react-dom";
 import { X, Check } from "lucide-react";
 import clsx from "clsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface BlogFilterModalProps {
   isOpen: boolean;
@@ -13,8 +12,13 @@ interface BlogFilterModalProps {
 export default function BlogFilterModal({ isOpen, onClose, onApply }: BlogFilterModalProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [sortBy, setSortBy] = useState<string>("Newest");
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const categories = ["All", "General", "Study Tips", "Rant", "Clinical", "News"];
   const sortOptions = ["Newest", "Oldest", "Most Liked", "Most Viewed"];
@@ -24,7 +28,7 @@ export default function BlogFilterModal({ isOpen, onClose, onApply }: BlogFilter
     onClose();
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
       <div className="bg-popover rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-in border border-border">
         {/* Header */}
@@ -100,6 +104,7 @@ export default function BlogFilterModal({ isOpen, onClose, onApply }: BlogFilter
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

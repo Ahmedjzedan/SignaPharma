@@ -81,6 +81,8 @@ export default function SavedRantsGrid({ initialSavedPosts }: SavedRantsGridProp
           Browse Articles
         </Link>
       </div>
+    );
+  }
 
 
   return (
@@ -170,7 +172,6 @@ export default function SavedRantsGrid({ initialSavedPosts }: SavedRantsGridProp
             </button>
           </div>
         </div>
-      ))}
       ))}
       </div>
     </>

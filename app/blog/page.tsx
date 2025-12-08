@@ -3,21 +3,48 @@ import BlogGrid, { BlogPost } from "../../components/BlogGrid";
 import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { posts, users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, like, and, desc, asc, sql } from "drizzle-orm";
 
 export const metadata: Metadata = {
   title: "SignaPharma | Community Blog",
   description: "Rants, clinical pearls, and survival guides.",
 };
 
-export default async function BlogPage() {
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const { category, search, sortBy } = await searchParams;
+
+  const whereConditions = [];
+
+  if (category && typeof category === "string" && category !== "All") {
+    whereConditions.push(eq(posts.category, category));
+  }
+
+  if (search && typeof search === "string") {
+    whereConditions.push(like(posts.title, `%${search}%`));
+  }
+
+  let orderBy = desc(posts.createdAt);
+  if (sortBy === "Oldest") {
+    orderBy = asc(posts.createdAt);
+  } else if (sortBy === "Most Liked") {
+    orderBy = desc(posts.likes);
+  } else if (sortBy === "Most Viewed") {
+    orderBy = desc(posts.views);
+  }
+
   const dbPosts = await db
     .select({
       post: posts,
       author: users,
     })
     .from(posts)
-    .leftJoin(users, eq(posts.authorId, users.id));
+    .leftJoin(users, eq(posts.authorId, users.id))
+    .where(and(...whereConditions))
+    .orderBy(orderBy);
 
   const mappedPosts: BlogPost[] = dbPosts.map(({ post, author }, index) => ({
     id: post.id,

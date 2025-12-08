@@ -7,6 +7,8 @@ import { Edit, Trash2, Plus } from "lucide-react";
 import { deletePost } from "@/app/actions/blog";
 import { redirect } from "next/navigation";
 
+import { stripMarkdown } from "@/lib/utils";
+
 export default async function MyPostsPage() {
   const session = await auth();
   
@@ -91,7 +93,7 @@ export default async function MyPostsPage() {
                 </h3>
                 
                 <p className="text-muted-foreground text-sm line-clamp-3 mb-4 flex-grow">
-                  {post.content.substring(0, 150)}...
+                  {stripMarkdown(post.content).substring(0, 150)}...
                 </p>
 
                 <div className="pt-4 border-t border-border flex justify-between items-center">
