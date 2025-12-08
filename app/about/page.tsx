@@ -12,22 +12,14 @@ export default function AboutPage() {
         {/* Hero Section - The Visionary Builder */}
         <div className="mb-20 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-6 tracking-tight leading-tight">
-            The Pharmacist Who <span className="text-primary">Codes</span>
+            Engineering Better <span className="text-primary">Healthcare Education</span>
           </h1>
           <div className="prose prose-lg text-muted-foreground max-w-3xl">
             <p>
-              I’m a pharmacy student who realized that memorizing drug
-              interactions is hard enough without fighting software that looks like 
-              it was built in 1998. Instead of actually studying for my exams, 
-              I procrastinated by building this entire platform. It&apos;s basically a 
-              very elaborate way to avoid reading my textbooks.
-            </p>
-            <p>
-              SignaPharma is the result of excessive caffeine and a refusal to use 
-              boring flashcards. It’s built on a modern tech stack because I believe 
-              healthcare education shouldn&apos;t feel like a punishment. I built this 
-              tool so I could learn pharmacology without falling asleep, and hopefully, 
-              it helps you too.
+              Memorizing drug interactions is difficult; fighting with outdated software makes it impossible. 
+              SignaPharma was built on a simple premise: healthcare education should be as intuitive as the 
+              consumer apps we use every day. By leveraging a modern tech stack, I’ve created a platform that 
+              prioritizes user experience and data accessibility over rote memorization.
             </p>
           </div>
         </div>
@@ -40,24 +32,17 @@ export default function AboutPage() {
                 <Terminal className="w-5 h-5" />
               </div>
               <h2 className="text-xl font-bold text-foreground">
-                Powered by Caffeine & Compilers
+                About the Creator
               </h2>
             </div>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                Hi, I’m the guy behind the code. By day, I’m a pharmacy student
-                trying to decipher doctor handwriting. By night, I’m a
-                Full-Stack Developer debugging database queries.
-              </p>
-              <p>
-                Why build SignaPharma? Because I looked at the current state of
-                pharmacy study tools and thought, &quot;I can fix this, or I can
-                complain about it.&quot; I chose to fix it. I trade sleep for syntax
-                to build tools that actually work for students like us.
+                I’m Ahmed, a Pharmacy Student and Full-Stack Developer. I approach software development with 
+                the same rigor required in clinical practice. SignaPharma isn't just a side project; it is a 
+                purpose-built tool designed to solve specific pain points in pharmaceutical education.
               </p>
               <p className="font-medium text-primary">
-                No corporate buzzwords here. Just a pharmacy student who spent way 
-                too much time centering divs instead of memorizing doses.
+                My goal is to build software that is clinically accurate, technically robust, and efficient.
               </p>
             </div>
           </div>
@@ -68,7 +53,7 @@ export default function AboutPage() {
             <div className="relative z-10">
               <div className="w-20 h-20 rounded-full bg-muted mb-6 overflow-hidden border-4 border-background shadow-md">
                 <img
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed"
+                  src="/dr-house.png"
                   alt="Ahmed"
                   className="w-full h-full object-cover"
                 />
@@ -88,33 +73,7 @@ export default function AboutPage() {
                       The Stack
                     </strong>
                     <span className="text-sm text-muted-foreground">
-                      Next.js, Tailwind CSS, SQLite/Turso, Drizzle ORM.
-                    </span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 text-muted-foreground">
-                    <Database className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <strong className="block text-foreground text-sm">
-                      The Background
-                    </strong>
-                    <span className="text-sm text-muted-foreground">
-                      Pharmacy Student (I know the pain of pharmacology).
-                    </span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 text-muted-foreground">
-                    <Coffee className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <strong className="block text-foreground text-sm">
-                      Current Status
-                    </strong>
-                    <span className="text-sm text-muted-foreground">
-                      Likely over-caffeinated and debugging a race condition.
+                      Built for performance and scalability using Next.js, Tailwind CSS, Turso (SQLite), and Drizzle ORM.
                     </span>
                   </div>
                 </li>

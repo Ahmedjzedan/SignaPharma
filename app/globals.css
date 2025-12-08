@@ -31,6 +31,8 @@
   --ring: 221.2 83.2% 53.3%;
 
   --radius: 0.5rem;
+
+  --profile-cover: 210 40% 96.1%;
 }
 
 .dark {
@@ -61,6 +63,8 @@
   --border: 217.2 32.6% 22.5%; /* Lighter border */
   --input: 217.2 32.6% 22.5%;
   --ring: 224.3 76.3% 48%;
+
+  --profile-cover: 222.2 47.4% 11.2%;
 }
 
 @theme {
@@ -292,4 +296,19 @@ body {
   background-color: hsl(var(--card));
   background-image: linear-gradient(hsl(var(--border)) 1px, transparent 1px);
   background-size: 100% 2rem;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Profile Cover Utility */
+.bg-profile-cover {
+  background-color: hsl(var(--profile-cover));
 }

@@ -1,64 +1,66 @@
-"use client";
+import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { users, savedDrugs, posts } from "@/lib/db/schema";
+import { eq, count, sum } from "drizzle-orm";
+import { redirect } from "next/navigation";
+import ProfileClientPage from "./ProfileClientPage";
 
-import { useState, useEffect } from "react";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import ProfileHeader from "../../components/ProfileHeader";
-import ProfileStats from "../../components/ProfileStats";
-import TrophyCase from "../../components/TrophyCase";
-import EditProfileModal from "../../components/EditProfileModal";
+export default async function ProfilePage() {
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    redirect("/auth");
+  }
 
-export default function ProfilePage() {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [user, setUser] = useState({
-    name: "Dr. Gregory House",
-    title: "Clinical Pharmacist",
-    location: "Princeton-Plainsboro",
-    bio: "I solve puzzles. I don't talk to patients. It's not lupus.",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=House",
-    level: 12,
-    xp: 2450,
-    maxXp: 3000,
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
   });
 
-  const [stats, setStats] = useState({
-    collected: 42,
-    elo: 1500,
-    streak: 5,
-  });
+  if (!user) redirect("/auth");
 
-  useEffect(() => {
-    const storedElo = localStorage.getItem("signapharma_elo");
-    if (storedElo) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setStats((prev) => ({ ...prev, elo: parseInt(storedElo, 10) }));
-    }
-  }, []);
+  const savedCount = await db
+    .select({ count: count() })
+    .from(savedDrugs)
+    .where(eq(savedDrugs.userId, user.id));
 
-  const handleSaveProfile = (updatedUser: {
-    name: string;
-    title: string;
-    bio: string;
-  }) => {
-    setUser((prev) => ({ ...prev, ...updatedUser }));
+  const postStats = await db
+    .select({ 
+      count: count(),
+      likes: sum(posts.likes)
+    })
+    .from(posts)
+    .where(eq(posts.authorId, user.id));
+
+  const stats = {
+    collected: savedCount[0].count,
+    elo: user.elo || 1500, 
+    streak: user.streak || 0,
+    blogs: postStats[0].count,
+    likes: Number(postStats[0].likes) || 0,
   };
 
-  return (
-    <>
-      <Navbar />
-      <main className="flex-grow pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        <ProfileHeader user={user} onEdit={() => setIsEditModalOpen(true)} />
-        <ProfileStats stats={stats} />
-        <TrophyCase />
-      </main>
-      <Footer />
+  const pinnedTrophies = user.pinnedTrophies ? JSON.parse(user.pinnedTrophies) : [];
 
-      <EditProfileModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        user={user}
-        onSave={handleSaveProfile}
-      />
-    </>
+  return (
+    <ProfileClientPage 
+      user={{
+        name: user.name || "User",
+        title: user.bio ? "Pharmacist" : "Student", // Fallback
+        location: "Unknown", // Not in DB
+        bio: user.bio || "No bio yet.",
+        avatar: user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=House",
+        level: Math.floor((user.xp || 0) / 1000) + 1,
+        xp: user.xp || 0,
+        maxXp: (Math.floor((user.xp || 0) / 1000) + 1) * 1000,
+        rank: user.rank || "Novice",
+        joinedAt: user.createdAt ? user.createdAt.toLocaleDateString("en-US", { month: "long", year: "numeric" }) : "December 2025",
+        linkedin: user.linkedin || "",
+        github: user.github || "",
+        instagram: user.instagram || "",
+        telegram: user.telegram || "",
+      }}
+      stats={stats}
+      pinnedTrophies={pinnedTrophies}
+    />
   );
 }

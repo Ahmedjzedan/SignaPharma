@@ -63,6 +63,8 @@ interface CasesContentProps {
   initialCase: Case;
 }
 
+import { updateUserStats } from "@/app/actions/profile";
+
 export default function CasesContent({ initialCase }: CasesContentProps) {
   const [elo, setElo] = useState(1500);
   const [eloChange, setEloChange] = useState<number | null>(null);
@@ -78,7 +80,7 @@ export default function CasesContent({ initialCase }: CasesContentProps) {
     }
   }, []);
 
-  const handleComplete = (isCorrect: boolean) => {
+  const handleComplete = async (isCorrect: boolean) => {
     if (caseAttempted) return;
 
     const change = isCorrect ? 12 : -12;
@@ -88,6 +90,12 @@ export default function CasesContent({ initialCase }: CasesContentProps) {
     setEloChange(change);
     setCaseAttempted(true);
     localStorage.setItem("signapharma_elo", newElo.toString());
+
+    try {
+      await updateUserStats({ eloChange: change, incrementStreak: true });
+    } catch (error) {
+      console.error("Failed to update stats", error);
+    }
   };
 
   const handleReset = () => {

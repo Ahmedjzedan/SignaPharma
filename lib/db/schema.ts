@@ -11,8 +11,15 @@ export const users = sqliteTable('users', {
   role: text('role').default('student'), // student, pharmacist, admin
   xp: integer('xp').default(0),
   streak: integer('streak').default(0),
+  lastStudyDate: integer('last_study_date', { mode: 'timestamp' }),
+  elo: integer('elo').default(1500),
   rank: text('rank').default('Novice'),
   bio: text('bio'),
+  linkedin: text('linkedin'),
+  github: text('github'),
+  instagram: text('instagram'),
+  telegram: text('telegram'),
+  pinnedTrophies: text('pinned_trophies'), // JSON array of trophy IDs
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
