@@ -79,7 +79,7 @@ export default function ProfileClientPage({ user: initialUser, stats, pinnedTrop
     <>
       <Navbar />
       <main className="grow pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        <ProfileHeader user={user} onEdit={() => setIsEditModalOpen(true)} />
+        <ProfileHeader user={user} onEdit={() => setIsEditModalOpen(true)} isOwnProfile={true} />
         <ProfileStats stats={stats} />
         <TrophyCase pinnedTrophies={pinnedTrophies} stats={stats} userLevel={user.level} />
       </main>

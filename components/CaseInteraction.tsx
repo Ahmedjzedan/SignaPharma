@@ -61,7 +61,7 @@ export default function CaseInteraction({
         <div className="absolute top-8 -left-3 w-6 h-6 bg-card border-b border-l border-border transform rotate-45 hidden md:block"></div>
 
         <div className="flex items-start gap-4">
-          <div className="hidden md:block w-14 h-14 rounded-full bg-muted flex-shrink-0 border-4 border-background shadow-lg overflow-hidden">
+          <div className="hidden md:block w-14 h-14 rounded-full bg-muted shrink-0 border-4 border-background shadow-lg overflow-hidden">
             <img
               src={doctorImage}
               alt="Attending"
@@ -141,10 +141,10 @@ export default function CaseInteraction({
                 <CheckCircle className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-green-800 dark:text-green-200 mb-2">
+                <h3 className="text-xl font-bold text-success-text mb-2">
                   {feedback.success.title}
                 </h3>
-                <p className="text-green-800 dark:text-green-200 text-lg mb-4">
+                <p className="text-success-text text-lg mb-4">
                   &quot;{feedback.success.message}&quot;
                 </p>
                 <button
@@ -167,15 +167,15 @@ export default function CaseInteraction({
                 <Skull className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-red-800 dark:text-red-200 mb-2">
+                <h3 className="text-xl font-bold text-failure-text mb-2">
                   {feedback.fail.title}
                 </h3>
-                <p className="text-red-800 dark:text-red-200 text-lg mb-4">
+                <p className="text-failure-text text-lg mb-4">
                   &quot;{feedback.fail.message}&quot;
                 </p>
                 <button
                   onClick={handleReset}
-                  className="px-6 py-3 bg-card border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  className="px-6 py-3 bg-card border border-red-300 dark:border-red-800 text-red-700 dark:text-red-400 font-bold rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                 >
                   Try Again (Don&apos;t kill her this time)
                 </button>

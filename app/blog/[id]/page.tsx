@@ -58,11 +58,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const formattedPost = {
     title: post.title,
     author: author?.name || "Unknown Author",
+    authorId: author?.id || "unknown",
     role: author?.role || "Contributor",
     date: post.createdAt ? new Date(post.createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' }) : "Unknown Date",
     readTime: "5 min read", // Placeholder or calculate based on word count
     views: "1.2k views", // Placeholder
-    avatarSeed: author?.name || "User",
+    avatarSeed: author?.image || author?.name || "User",
     tags: [
       { label: `#${post.category || "General"}`, color: "bg-medical-50 text-medical-600 border-medical-100" },
     ],

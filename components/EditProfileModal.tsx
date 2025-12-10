@@ -26,11 +26,18 @@ interface EditProfileModalProps {
   }) => void;
 }
 
-const AVATAR_SEEDS = [
-  "House", "Wilson", "Cuddy", "Foreman", "Chase", 
-  "Cameron", "Thirteen", "Taub", "Kutner", "Masters", 
-  "Adams", "Park", "Vogler", "Tritter", "Amber", 
-  "Stacy", "Lucas", "Dominika", "Martha", "Jessica"
+const AVAILABLE_AVATARS = [
+  "/avatars/house.png",
+  "/avatars/wilson.png",
+  "/avatars/cuddy.png",
+  "/avatars/forman.png",
+  "/avatars/chas.png",
+  "/avatars/cameron.png",
+  "/avatars/13.png",
+  "/avatars/cutner.png",
+  "/avatars/cutthoatbitc.png",
+  "/avatars/taob.png",
+  "/avatars/house_Ex.png",
 ];
 
 export default function EditProfileModal({
@@ -160,21 +167,21 @@ export default function EditProfileModal({
                     />
                   </div>
                   
-                  <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
-                    {AVATAR_SEEDS.map((seed) => (
+                  <div className="grid grid-cols-5 gap-2">
+                    {AVAILABLE_AVATARS.map((avatar, index) => (
                       <button
-                        key={seed}
+                        key={index}
                         type="button"
                         onClick={() => {
-                          setFormData({ ...formData, avatar: `https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}` });
+                          setFormData({ ...formData, avatar: avatar });
                           setShowAvatarSelection(false);
                         }}
                         className="aspect-square rounded-full overflow-hidden border border-border hover:border-medical-500 hover:scale-110 transition-all bg-background"
-                        title={seed}
+                        title={`Avatar ${index + 1}`}
                       >
                         <img
-                          src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}`}
-                          alt={seed}
+                          src={avatar}
+                          alt={`Avatar ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
                       </button>

@@ -157,16 +157,16 @@ export default function SavedRantsGrid({ initialSavedPosts }: SavedRantsGridProp
           </div>
 
           {/* Hover Actions */}
-          <div className="absolute inset-0 bg-background/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-3 p-6">
+          <div className="absolute inset-0 bg-rant-hover/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-3 p-6">
             <Link
               href={`/blog/${post.id}`}
-              className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
+              className="w-full py-2.5 bg-blue-600 text-white dark:bg-blue-500 rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
             >
               <BookOpen className="w-4 h-4" /> Read Now
             </Link>
             <button
               onClick={() => handleRemove(post.id)}
-              className="w-full py-2.5 bg-card border border-destructive/30 text-destructive rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75"
+              className="w-full py-2.5 bg-card border border-red-200 text-red-600 dark:border-red-800 dark:text-red-400 rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 dark:hover:border-red-700 transition-colors transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75"
             >
               <Trash2 className="w-4 h-4" /> Remove from Saved
             </button>

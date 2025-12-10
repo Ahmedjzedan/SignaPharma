@@ -11,15 +11,17 @@ interface ProfileHeaderProps {
     maxXp: number;
     rank: string;
     joinedAt: string;
+    bio?: string;
     linkedin?: string;
     github?: string;
     instagram?: string;
     telegram?: string;
   };
-  onEdit: () => void;
+  onEdit?: () => void;
+  isOwnProfile?: boolean;
 }
 
-export default function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
+export default function ProfileHeader({ user, onEdit, isOwnProfile = false }: ProfileHeaderProps) {
   const xpPercentage = Math.min(100, Math.max(0, (user.xp / user.maxXp) * 100));
 
   return (
@@ -38,13 +40,15 @@ export default function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
-              {/* Edit Overlay */}
-              <div
-                onClick={onEdit}
-                className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-              >
-                <Camera className="w-8 h-8 text-white" />
-              </div>
+              {/* Edit Overlay - Only if own profile */}
+              {isOwnProfile && onEdit && (
+                <div
+                  onClick={onEdit}
+                  className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                >
+                  <Camera className="w-8 h-8 text-white" />
+                </div>
+              )}
             </div>
 
             {/* Text Info */}
@@ -65,6 +69,13 @@ export default function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
                   <Calendar className="w-3.5 h-3.5" /> Joined {user.joinedAt}
                 </span>
               </div>
+
+              {/* Bio */}
+              {user.bio && (
+                <p className="mt-4 text-sm text-muted-foreground max-w-2xl leading-relaxed">
+                  {user.bio}
+                </p>
+              )}
 
               {/* Socials */}
               <div className="flex items-center justify-center sm:justify-start gap-3 mt-4">
@@ -88,38 +99,42 @@ export default function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
                     <Send className="w-4 h-4" />
                   </a>
                 )}
-                {!user.linkedin && !user.github && !user.instagram && !user.telegram && (
+                {!user.linkedin && !user.github && !user.instagram && !user.telegram && isOwnProfile && (
                    <span className="text-xs text-muted-foreground italic">Add socials via Edit Profile</span>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Level & Action */}
-          <div className="flex flex-col items-center sm:items-end gap-4 w-full sm:w-auto mb-2">
-            <div className="flex flex-col items-end gap-2 w-full sm:w-64">
-              <div className="flex justify-between w-full text-xs font-bold">
-                <span className="text-muted-foreground uppercase">Level {user.level}</span>
-                <span className="text-medical-600">{Math.floor(xpPercentage)}%</span>
+          {/* Level & Action - Only show if own profile */}
+          {isOwnProfile && (
+            <div className="flex flex-col items-center sm:items-end gap-4 w-full sm:w-auto mb-2">
+              <div className="flex flex-col items-end gap-2 w-full sm:w-64">
+                <div className="flex justify-between w-full text-xs font-bold">
+                  <span className="text-muted-foreground uppercase">Level {user.level}</span>
+                  <span className="text-medical-600">{Math.floor(xpPercentage)}%</span>
+                </div>
+                <div className="w-full h-2.5 bg-secondary-foreground/50 rounded-full overflow-hidden border border-border">
+                  <div 
+                    className="h-full bg-gradient-to-r from-medical-500 to-medical-600 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${xpPercentage}%` }}
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {user.xp.toLocaleString()} / {user.maxXp.toLocaleString()} XP to Level {user.level + 1}
+                </span>
               </div>
-              <div className="w-full h-2.5 bg-secondary-foreground/50 rounded-full overflow-hidden border border-border">
-                <div 
-                  className="h-full bg-gradient-to-r from-medical-500 to-medical-600 rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: `${xpPercentage}%` }}
-                />
-              </div>
-              <span className="text-xs text-muted-foreground">
-                {user.xp.toLocaleString()} / {user.maxXp.toLocaleString()} XP to Level {user.level + 1}
-              </span>
+              
+              {onEdit && (
+                <button
+                  onClick={onEdit}
+                  className="px-5 py-2 bg-background border border-input hover:border-medical-500 hover:text-medical-600 text-foreground font-semibold rounded-xl text-sm transition-all shadow-sm w-full sm:w-auto"
+                >
+                  Edit Profile
+                </button>
+              )}
             </div>
-            
-            <button
-              onClick={onEdit}
-              className="px-5 py-2 bg-background border border-input hover:border-medical-500 hover:text-medical-600 text-foreground font-semibold rounded-xl text-sm transition-all shadow-sm w-full sm:w-auto"
-            >
-              Edit Profile
-            </button>
-          </div>
+          )}
         </div>
       </div>
     </div>

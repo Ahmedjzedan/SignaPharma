@@ -28,9 +28,10 @@ export interface Drug {
 
 interface LibraryContentProps {
   initialDrugs: Drug[];
+  topDoctors: any[]; // Using any for simplicity here, or define a proper type
 }
 
-export default function LibraryContent({ initialDrugs }: LibraryContentProps) {
+export default function LibraryContent({ initialDrugs, topDoctors }: LibraryContentProps) {
   const [drugs, setDrugs] = useState<Drug[]>(initialDrugs);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [viewDrug, setViewDrug] = useState<Drug | null>(null);
@@ -81,6 +82,26 @@ export default function LibraryContent({ initialDrugs }: LibraryContentProps) {
       <Navbar />
       <main className="flex-grow pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <LibraryHeader stats={stats} onAddDrug={() => setIsAddModalOpen(true)} />
+        
+        {/* Top Doctors Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-foreground mb-4">Top Doctors</h2>
+          <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+            {topDoctors.map((doc) => (
+              <a
+                key={doc.id}
+                href={`/profile/${doc.id}`}
+                className="flex flex-col items-center min-w-[100px] p-4 bg-card rounded-xl border border-border hover:border-medical-500 transition-all group"
+              >
+                <div className="w-16 h-16 rounded-full overflow-hidden mb-2 border-2 border-muted group-hover:border-medical-500 transition-colors">
+                  <img src={doc.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=House"} alt={doc.name} className="w-full h-full object-cover" />
+                </div>
+                <span className="text-sm font-bold text-foreground text-center line-clamp-1">{doc.name}</span>
+                <span className="text-xs text-muted-foreground">{doc.rank}</span>
+              </a>
+            ))}
+          </div>
+        </div>
 
         {drugs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

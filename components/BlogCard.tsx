@@ -1,10 +1,12 @@
 import clsx from "clsx";
 import { stripMarkdown } from "@/lib/utils";
+import Link from "next/link";
 
 interface BlogCardProps {
   title: string;
   description: string;
   author: string;
+  authorId: string;
   role: string;
   avatarSeed: string;
   tags: { label: string; color: string }[];
@@ -18,6 +20,7 @@ export default function BlogCard({
   title,
   description,
   author,
+  authorId,
   role,
   avatarSeed,
   tags,
@@ -67,17 +70,23 @@ export default function BlogCard({
 
         {/* Footer: Author */}
         <div className="flex items-center gap-3 pt-4 border-t border-border">
-          <div className="w-8 h-8 rounded-full bg-muted overflow-hidden">
-            <img
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
-              alt="Author"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="text-xs">
-            <p className="font-semibold text-card-foreground">{author}</p>
-            <p className="text-muted-foreground">{role}</p>
-          </div>
+          <Link 
+            href={`/profile/${authorId}`} 
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-8 h-8 rounded-full bg-muted overflow-hidden">
+              <img
+                src={avatarSeed.startsWith("/") ? avatarSeed : `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
+                alt="Author"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="text-xs">
+              <p className="font-semibold text-card-foreground hover:text-primary transition-colors">{author}</p>
+              <p className="text-muted-foreground">{role}</p>
+            </div>
+          </Link>
         </div>
       </div>
     </article>

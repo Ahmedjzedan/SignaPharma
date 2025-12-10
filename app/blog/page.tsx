@@ -51,8 +51,9 @@ export default async function BlogPage({
     title: post.title,
     description: post.content.substring(0, 150) + "...",
     author: author?.name || "Unknown Author",
+    authorId: author?.id || "unknown",
     role: author?.role || "Contributor",
-    avatarSeed: author?.name || "User",
+    avatarSeed: author?.image || author?.name || "User",
     tags: [
       {
         label: `#${post.category || "General"}`,

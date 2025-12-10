@@ -24,5 +24,11 @@ export default async function LibraryPage() {
     dosage: "N/A", // Not in DB yet
   }));
 
-  return <LibraryContent initialDrugs={mappedDrugs} />;
+  // Fetch top doctors (users)
+  const topDoctors = await db.query.users.findMany({
+    limit: 6,
+    orderBy: (users, { desc }) => [desc(users.xp)],
+  });
+
+  return <LibraryContent initialDrugs={mappedDrugs} topDoctors={topDoctors} />;
 }

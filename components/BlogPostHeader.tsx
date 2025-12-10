@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, Eye } from "lucide-react";
 interface BlogPostHeaderProps {
   title: string;
   author: string;
+  authorId: string;
   role: string;
   date: string;
   readTime: string;
@@ -16,6 +17,7 @@ interface BlogPostHeaderProps {
 export default function BlogPostHeader({
   title,
   author,
+  authorId,
   role,
   date,
   readTime,
@@ -67,10 +69,10 @@ export default function BlogPostHeader({
           </h1>
 
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-              <Link href={`/profile/${author}`} className="flex items-center gap-3 group">
+              <Link href={`/profile/${authorId}`} className="flex items-center gap-3 group">
                 <div className="w-12 h-12 rounded-full bg-muted overflow-hidden ring-2 ring-background shadow-sm group-hover:ring-primary transition-all">
                   <img
-                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
+                    src={avatarSeed.startsWith("/") ? avatarSeed : `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
                     alt="Author"
                     className="w-full h-full object-cover"
                   />

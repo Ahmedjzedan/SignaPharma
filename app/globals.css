@@ -33,6 +33,14 @@
   --radius: 0.5rem;
 
   --profile-cover: 210 40% 96.1%;
+
+  --failure-text: 0 74% 15%;
+  --success-text: 145 80% 10%;
+
+  --rant-hover-bg: 210 40% 98%;
+  --rant-remove-color: 0 72% 51%;
+  --rant-read-bg: 221 83% 53%;
+  --rant-read-text: 0 0% 100%;
 }
 
 .dark {
@@ -65,6 +73,14 @@
   --ring: 224.3 76.3% 48%;
 
   --profile-cover: 222.2 47.4% 11.2%;
+
+  --failure-text: 0 96% 89%;
+  --success-text: 142 76% 85%;
+
+  --rant-hover-bg: 217.2 32.6% 25%;
+  --rant-remove-color: 0 94% 82%;
+  --rant-read-bg: 217 91% 60%;
+  --rant-read-text: 0 0% 100%;
 }
 
 @theme {
@@ -97,6 +113,13 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+
+  --color-failure-text: hsl(var(--failure-text));
+  --color-success-text: hsl(var(--success-text));
+  --color-rant-hover: hsl(var(--rant-hover-bg));
+  --color-rant-remove: hsl(var(--rant-remove-color));
+  --color-rant-read-bg: hsl(var(--rant-read-bg));
+  --color-rant-read-text: hsl(var(--rant-read-text));
 
   --color-medical-50: #eff6ff;
   --color-medical-100: #dbeafe;

@@ -8,6 +8,7 @@ export interface BlogPost {
   title: string;
   description: string;
   author: string;
+  authorId: string;
   role: string;
   avatarSeed: string;
   tags: { label: string; color: string }[];
