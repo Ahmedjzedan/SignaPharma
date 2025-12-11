@@ -58,6 +58,7 @@ export default async function ProfilePage() {
         github: user.github || "",
         instagram: user.instagram || "",
         telegram: user.telegram || "",
+        scientificBackground: user.scientificBackground || "Layperson",
       }}
       stats={stats}
       pinnedTrophies={pinnedTrophies}

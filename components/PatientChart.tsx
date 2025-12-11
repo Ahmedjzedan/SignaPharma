@@ -1,6 +1,8 @@
-import { Heart, Activity, Thermometer } from "lucide-react";
+import { Activity, Heart, Thermometer, User } from 'lucide-react';
+import ReportButton from './ReportButton';
 
 interface PatientChartProps {
+  caseId: string;
   patient: {
     name: string;
     dob: string;
@@ -24,36 +26,42 @@ interface PatientChartProps {
 }
 
 export default function PatientChart({
+  caseId,
   patient,
   vitals,
   history,
   progress,
 }: PatientChartProps) {
   return (
-    <aside className="lg:w-1/3 flex-shrink-0">
+    <aside className="lg:w-1/3 shrink-0">
       <div className="lg:sticky lg:top-24 space-y-6">
         {/* Patient ID Card */}
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden relative">
           {/* Chart Header */}
           <div className="bg-muted p-4 flex justify-between items-center text-foreground">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center font-bold border border-border">
-                {patient.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
+              <div className="shrink-0">
+                <div className="w-16 h-16 rounded-full bg-medical-100 dark:bg-medical-900/30 flex items-center justify-center border-2 border-medical-200 dark:border-medical-800">
+                  <User className="w-8 h-8 text-medical-600 dark:text-medical-400" />
+                </div>
               </div>
               <div>
-                <h2 className="font-bold text-sm">{patient.name}</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-bold text-sm">{patient.name}</h2>
+                  <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full border border-blue-200">
+                    {patient.age}y
+                  </span>
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  DOB: {patient.dob} ({patient.age}y)
+                  DOB: {patient.dob}
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <span className="bg-red-500/20 text-red-100 text-xs px-2 py-1 rounded border border-red-500/30">
+            <div className="text-right flex flex-col items-end gap-1">
+              <span className="bg-red-100 text-red-700 font-bold text-xs px-2 py-1 rounded border border-red-200">
                 ALLERGY: {patient.allergy}
               </span>
+              <ReportButton targetId={caseId} targetType="case" variant="text" className="text-[10px] px-0 py-0 h-auto" />
             </div>
           </div>
 

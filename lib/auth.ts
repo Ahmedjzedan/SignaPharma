@@ -18,4 +18,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
+  callbacks: {
+    async session({ session, user }) {
+      if (session.user) {
+        session.user.id = user.id;
+        session.user.role = user.role;
+        session.user.isBanned = user.isBanned;
+      }
+      return session;
+    },
+  },
 })

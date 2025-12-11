@@ -11,6 +11,7 @@ import { posts, users, comments } from "@/lib/db/schema";
 import { eq, count, desc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getPostStats } from "@/app/actions/blog";
+import ReportButton from "@/components/ReportButton";
 
 interface BlogPostPageProps {
   params: Promise<{ id: string }>;
@@ -41,7 +42,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     where: eq(posts.id, id),
   });
 
-  if (!post) {
+  if (!post || post.deletedAt) {
     notFound();
   }
 
@@ -115,6 +116,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <BlogPostHeader 
           {...formattedPost} 
           isAuthor={session?.user?.id === post.authorId}
+          isAdmin={session?.user?.role === "leader" || session?.user?.role === "co-leader"}
           postId={post.id}
         />
         <BlogPostContent 
@@ -126,6 +128,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           commentsCount={commentsCount}
         />
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" id="comments-section">
+          <div className="flex justify-end mb-4">
+            <ReportButton targetId={post.id} targetType="blog" variant="text" />
+          </div>
           <BlogPostComments postId={post.id} initialComments={rootComments} session={session} />
         </article>
       </main>

@@ -30,7 +30,7 @@ export default function LibraryHeader({ stats, onAddDrug }: LibraryHeaderProps) 
           className="flex items-center justify-center gap-2 px-6 py-3 bg-medical-600 hover:bg-medical-700 text-white rounded-xl font-bold shadow-lg shadow-medical-600/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
         >
           <PlusCircle className="w-5 h-5" />
-          Add New Drug
+          Add Drug to Library
         </button>
       </div>
 

@@ -24,6 +24,7 @@ interface User {
   github: string;
   instagram: string;
   telegram: string;
+  scientificBackground: string;
 }
 
 interface Stats {
@@ -82,6 +83,58 @@ export default function ProfileClientPage({ user: initialUser, stats, pinnedTrop
         <ProfileHeader user={user} onEdit={() => setIsEditModalOpen(true)} isOwnProfile={true} />
         <ProfileStats stats={stats} />
         <TrophyCase pinnedTrophies={pinnedTrophies} stats={stats} userLevel={user.level} />
+        
+        {/* Hidden Section for Owner */}
+        <div className="mt-12 p-6 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm">
+          <div className="flex items-center gap-2 mb-4 text-muted-foreground">
+            <span className="text-xs font-mono uppercase tracking-widest">Hidden Settings (Owner Only)</span>
+          </div>
+          
+          <h3 className="text-lg font-bold mb-4">Scientific Background</h3>
+          <p className="text-sm text-muted-foreground mb-6">
+            This helps us tailor the complexity of clinical cases for you.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button
+              onClick={async () => {
+                try {
+                  await import("@/app/actions/onboarding").then(mod => mod.updateScientificBackground("Layperson"));
+                  setUser({ ...user, scientificBackground: "Layperson" });
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              className={`p-4 rounded-xl border-2 text-left transition-all ${
+                user.scientificBackground === "Layperson"
+                  ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+                  : "border-border hover:border-primary/50"
+              }`}
+            >
+              <div className="font-bold text-foreground">General Interest</div>
+              <div className="text-sm text-muted-foreground">I'm curious about medicine but not a professional.</div>
+            </button>
+
+            <button
+              onClick={async () => {
+                try {
+                  await import("@/app/actions/onboarding").then(mod => mod.updateScientificBackground("Professional"));
+                  setUser({ ...user, scientificBackground: "Professional" });
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              className={`p-4 rounded-xl border-2 text-left transition-all ${
+                user.scientificBackground !== "Layperson"
+                  ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+                  : "border-border hover:border-primary/50"
+              }`}
+            >
+              <div className="font-bold text-foreground">Healthcare World</div>
+              <div className="text-sm text-muted-foreground">I'm a student, pharmacist, nurse, or doctor.</div>
+            </button>
+          </div>
+        </div>
       </main>
       <Footer />
 

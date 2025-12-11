@@ -2,8 +2,8 @@
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { users, recentCases } from "@/lib/db/schema";
+import { eq, and, lt } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function updateProfile(data: {
@@ -83,7 +83,7 @@ export async function togglePinTrophy(trophyId: string) {
   revalidatePath("/profile");
 }
 
-export async function updateUserStats(data: { eloChange?: number; incrementStreak?: boolean }) {
+export async function updateUserStats(data: { eloChange?: number; incrementStreak?: boolean; caseId?: string }) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
@@ -123,6 +123,28 @@ export async function updateUserStats(data: { eloChange?: number; incrementStrea
       updates.streak = 1;
       updates.lastStudyDate = new Date();
     }
+  }
+
+  // Cases Solved Update
+  if (data.incrementStreak) { // Assuming incrementStreak implies a successful case completion
+     updates.casesSolved = (user.casesSolved || 0) + 1;
+  }
+
+  // Recent Cases Logic
+  if (data.caseId) {
+    // 1. Insert into recent_cases
+    await db.insert(recentCases).values({
+      userId: user.id,
+      caseId: data.caseId,
+    });
+
+    // 2. Cleanup old entries (> 5 minutes)
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    await db.delete(recentCases)
+      .where(and(
+        eq(recentCases.userId, user.id),
+        lt(recentCases.solvedAt, fiveMinutesAgo)
+      ));
   }
 
   if (Object.keys(updates).length > 0) {

@@ -40,6 +40,7 @@ interface QuizOption {
   label: string;
   text: string;
   isCorrect: boolean;
+  feedback?: string;
 }
 
 interface QuizData {
@@ -57,6 +58,7 @@ export interface Case {
   patient: PatientData;
   scenario: ScenarioData;
   quiz: QuizData;
+  authorName?: string;
 }
 
 interface CasesContentProps {
@@ -65,34 +67,62 @@ interface CasesContentProps {
 
 import { updateUserStats } from "@/app/actions/profile";
 
-export default function CasesContent({ initialCase }: CasesContentProps) {
-  const [elo, setElo] = useState(1500);
+import OnboardingModal from "@/components/OnboardingModal";
+import CaseCreationModal from "@/components/CaseCreationModal";
+import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
+
+export default function CasesContent({ 
+  initialCase, 
+  showOnboarding, 
+  initialElo = 1500,
+  isLayperson = false,
+  initialCasesSolved = 0
+}: CasesContentProps & { 
+  showOnboarding?: boolean; 
+  initialElo?: number;
+  isLayperson?: boolean;
+  initialCasesSolved?: number;
+}) {
+  const router = useRouter();
+  const [elo, setElo] = useState(initialElo);
+  const [casesSolved, setCasesSolved] = useState(initialCasesSolved);
   const [eloChange, setEloChange] = useState<number | null>(null);
   const [caseAttempted, setCaseAttempted] = useState(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(!!showOnboarding);
+  const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   // In a real app with multiple cases, we'd have state to switch cases.
   // For now, we just display the one passed in.
   const [currentCase, setCurrentCase] = useState<Case>(initialCase);
 
-  useEffect(() => {
-    const storedElo = localStorage.getItem("signapharma_elo");
-    if (storedElo) {
-      setElo(parseInt(storedElo, 10));
-    }
-  }, []);
+  // Removed localStorage effect for ELO initialization as it's now passed from server
 
   const handleComplete = async (isCorrect: boolean) => {
     if (caseAttempted) return;
 
-    const change = isCorrect ? 12 : -12;
-    const newElo = elo + change;
+    let change = 0;
+    let newElo = elo;
 
-    setElo(newElo);
-    setEloChange(change);
+    if (!isLayperson) {
+      change = isCorrect ? 12 : -12;
+      newElo = elo + change;
+      setElo(newElo);
+      setEloChange(change);
+      localStorage.setItem("signapharma_elo", newElo.toString());
+    }
+    
     setCaseAttempted(true);
-    localStorage.setItem("signapharma_elo", newElo.toString());
+    
+    if (isCorrect && isLayperson) {
+      setCasesSolved(prev => prev + 1);
+    }
 
     try {
-      await updateUserStats({ eloChange: change, incrementStreak: true });
+      await updateUserStats({ 
+        eloChange: isLayperson ? undefined : change, 
+        incrementStreak: isCorrect,
+        caseId: isCorrect ? currentCase.id : undefined
+      });
     } catch (error) {
       console.error("Failed to update stats", error);
     }
@@ -112,35 +142,63 @@ export default function CasesContent({ initialCase }: CasesContentProps) {
 
   return (
     <>
+      <CaseCreationModal 
+        isOpen={isCreationModalOpen} 
+        onClose={() => setIsCreationModalOpen(false)} 
+      />
+      <OnboardingModal 
+        isOpen={isOnboardingOpen} 
+        onComplete={() => {
+          setIsOnboardingOpen(false);
+          router.refresh(); // Refresh to get new cases based on background
+        }} 
+      />
       <Navbar />
-      <main className="flex-grow pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        <CaseHeader
-          caseId={currentCase.id}
-          isUrgent={currentCase.isUrgent}
-          title={currentCase.title}
-          elo={elo}
-          eloChange={eloChange}
-        />
-
-        <div className="flex flex-col lg:flex-row gap-8 min-h-[80vh]">
-          <PatientChart
-            patient={currentCase.patient}
-            vitals={currentCase.patient.vitals}
-            history={currentCase.patient.history}
-            progress={currentCase.patient.progress}
+      <main className="grow pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+          <CaseHeader
+            caseId={currentCase.id}
+            isUrgent={currentCase.isUrgent}
+            title={currentCase.title}
+            elo={elo}
+            eloChange={eloChange}
+            isLayperson={isLayperson}
+            casesSolved={casesSolved}
+            authorName={currentCase.authorName}
           />
 
-          <CaseInteraction
-            doctorImage={currentCase.scenario.doctorImage}
-            doctorName={currentCase.scenario.doctorName}
-            prompt={currentCase.scenario.prompt}
-            options={currentCase.quiz.options}
-            feedback={currentCase.quiz.feedback}
-            onComplete={handleComplete}
-            onReset={handleReset}
-            onNext={handleNext}
-          />
-        </div>
+          <div className="flex flex-col lg:flex-row gap-8 min-h-[80vh]">
+            <PatientChart
+              caseId={currentCase.id}
+              patient={currentCase.patient}
+              vitals={currentCase.patient.vitals}
+              history={currentCase.patient.history}
+              progress={currentCase.patient.progress}
+            />
+
+            <CaseInteraction
+              doctorImage={currentCase.scenario.doctorImage}
+              doctorName={currentCase.scenario.doctorName}
+              prompt={currentCase.scenario.prompt}
+              options={currentCase.quiz.options}
+              feedback={currentCase.quiz.feedback}
+              onComplete={handleComplete}
+              onReset={handleReset}
+              onNext={handleNext}
+              isLayperson={isLayperson}
+            />
+          </div>
+
+          {!isLayperson && (
+            <div className="mt-12 flex justify-center">
+              <button
+                onClick={() => setIsCreationModalOpen(true)}
+                className="px-6 py-3 bg-secondary text-secondary-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Create Your Own Case
+              </button>
+            </div>
+          )}
       </main>
       <Footer />
     </>

@@ -13,13 +13,26 @@ export const users = sqliteTable('users', {
   streak: integer('streak').default(0),
   lastStudyDate: integer('last_study_date', { mode: 'timestamp' }),
   elo: integer('elo').default(1500),
+  casesSolved: integer('cases_solved').default(0),
   rank: text('rank').default('Novice'),
+  scientificBackground: text('scientific_background'), // 'Layperson', 'Student', 'Professional'
   bio: text('bio'),
   linkedin: text('linkedin'),
   github: text('github'),
   instagram: text('instagram'),
   telegram: text('telegram'),
   pinnedTrophies: text('pinned_trophies'), // JSON array of trophy IDs
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+  isBanned: integer('is_banned', { mode: 'boolean' }).default(false),
+});
+
+export const reports = sqliteTable('reports', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  reporterId: text('reporter_id').references(() => users.id),
+  targetId: text('target_id').notNull(), // ID of the reported item (blog, case, user)
+  targetType: text('target_type').notNull(), // 'blog', 'case', 'user', 'comment'
+  reason: text('reason').notNull(),
+  status: text('status').default('pending'), // 'pending', 'resolved', 'dismissed'
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
@@ -69,15 +82,34 @@ export const verificationTokens = sqliteTable(
   })
 );
 
+// Manufacturers
+export const manufacturers = sqliteTable('manufacturers', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text('name').notNull().unique(),
+});
+
+// Drug Classes
+export const drugClasses = sqliteTable('drug_classes', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text('name').notNull().unique(),
+});
+
 // Drugs (Library)
 export const drugs = sqliteTable('drugs', {
   id: text('id').primaryKey(),
-  name: text('name').notNull(),
-  description: text('description').notNull(),
-  category: text('category').notNull(),
+  brandName: text('brand_name').notNull(),
+  genericName: text('generic_name').notNull(),
+  manufacturerId: text('manufacturer_id').references(() => manufacturers.id),
+  classId: text('class_id').references(() => drugClasses.id),
+  description: text('description'), // Can be derived from indications if needed, or kept as general summary
+  category: text('category'), // Keeping for backward compatibility or broader grouping
   imageUrl: text('image_url'),
   mechanismOfAction: text('mechanism_of_action'),
   sideEffects: text('side_effects'), // JSON string or simple text
+  boxedWarning: text('boxed_warning'),
+  formula: text('formula'), // Active Ingredient
+  indicationsAndUsage: text('indications_and_usage'),
+  dosageAndAdministration: text('dosage_and_administration'),
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
@@ -100,6 +132,7 @@ export const posts = sqliteTable('posts', {
   likes: integer('likes').default(0),
   views: integer('views').default(0),
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+  deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 });
 
 // Comments
@@ -150,16 +183,30 @@ export const quizResults = sqliteTable('quiz_results', {
 // Cases
 export const cases = sqliteTable('cases', {
   id: text('id').primaryKey(),
+  authorId: text('author_id').references(() => users.id),
   title: text('title').notNull(),
   description: text('description').notNull(),
   difficulty: integer('difficulty').notNull(), // ELO rating
   category: text('category').notNull(),
+  specialty: text('specialty'), // 'Cardio', 'ID', etc.
+  scenarioType: text('scenario_type'), // 'Diagnosis', 'Management', etc.
+  targetAudience: text('target_audience').default('General'), // 'Layperson', 'General', 'Professional'
   pattern: text('pattern'), // e.g., "Hypotension", "Toxidrome"
   medicines: text('medicines'), // JSON array of related drugs
   patientData: text('patient_data').notNull(), // JSON object: { name, dob, age, allergy, vitals: {}, history: {} }
   scenario: text('scenario').notNull(), // JSON object: { doctorName, doctorImage, prompt }
   quiz: text('quiz').notNull(), // JSON object: { options: [], feedback: {} }
+  status: text('status').default('approved'), // 'pending', 'approved', 'rejected'
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+  deletedAt: integer('deleted_at', { mode: 'timestamp' }),
+});
+
+// Recent Cases (Temporary Solved)
+export const recentCases = sqliteTable('recent_cases', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  caseId: text('case_id').references(() => cases.id, { onDelete: 'cascade' }),
+  solvedAt: integer('solved_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
 // Saved Posts
@@ -241,6 +288,26 @@ export const savedPostsRelations = relations(savedPosts, ({ one }) => ({
     fields: [savedPosts.userId],
     references: [users.id],
   }),
+}));
+
+export const manufacturersRelations = relations(manufacturers, ({ many }) => ({
+  drugs: many(drugs),
+}));
+
+export const drugClassesRelations = relations(drugClasses, ({ many }) => ({
+  drugs: many(drugs),
+}));
+
+export const drugsRelations = relations(drugs, ({ one, many }) => ({
+  manufacturer: one(manufacturers, {
+    fields: [drugs.manufacturerId],
+    references: [manufacturers.id],
+  }),
+  class: one(drugClasses, {
+    fields: [drugs.classId],
+    references: [drugClasses.id],
+  }),
+  savedBy: many(savedDrugs),
 }));
 
 // Force rebuild

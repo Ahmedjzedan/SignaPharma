@@ -9,6 +9,7 @@ interface Option {
   label: string;
   text: string;
   isCorrect: boolean;
+  feedback?: string;
 }
 
 interface CaseInteractionProps {
@@ -23,7 +24,10 @@ interface CaseInteractionProps {
   onComplete: (isCorrect: boolean) => void;
   onReset: () => void;
   onNext: () => void;
+  isLayperson?: boolean;
 }
+
+import { MOTIVATIONAL_PHRASES } from "@/lib/constants/motivational_phrases";
 
 export default function CaseInteraction({
   doctorImage,
@@ -34,15 +38,26 @@ export default function CaseInteraction({
   onComplete,
   onReset,
   onNext,
+  isLayperson,
 }: CaseInteractionProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [motivationalPhrase, setMotivationalPhrase] = useState<string>("");
+
+  // Options are already shuffled from the server
+  const shuffledOptions = options;
 
   const handleChoice = (option: Option) => {
     if (selectedOption) return; // Prevent double guessing
 
     setSelectedOption(option.id);
     setIsCorrect(option.isCorrect);
+    
+    if (option.isCorrect && isLayperson) {
+      const randomPhrase = MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
+      setMotivationalPhrase(randomPhrase);
+    }
+    
     onComplete(option.isCorrect);
   };
 
@@ -51,6 +66,8 @@ export default function CaseInteraction({
     setIsCorrect(null);
     onReset();
   };
+
+  const selectedOptionData = options.find((o) => o.id === selectedOption);
 
   return (
     <section className="lg:w-2/3 flex flex-col">
@@ -81,7 +98,7 @@ export default function CaseInteraction({
 
       {/* MCQ Interface */}
       <div className="space-y-4">
-        {options.map((option) => (
+        {shuffledOptions.map((option, index) => (
           <button
             key={option.id}
             onClick={() => handleChoice(option)}
@@ -110,7 +127,7 @@ export default function CaseInteraction({
                     : "text-muted-foreground"
                 )}
               >
-                {option.label}
+                Option {String.fromCharCode(65 + index)}
               </span>
               <span className="text-lg font-medium text-foreground">
                 {option.text}
@@ -145,7 +162,7 @@ export default function CaseInteraction({
                   {feedback.success.title}
                 </h3>
                 <p className="text-success-text text-lg mb-4">
-                  &quot;{feedback.success.message}&quot;
+                  &quot;{isLayperson ? motivationalPhrase : feedback.success.message}&quot;
                 </p>
                 <button
                   onClick={onNext}
@@ -171,7 +188,7 @@ export default function CaseInteraction({
                   {feedback.fail.title}
                 </h3>
                 <p className="text-failure-text text-lg mb-4">
-                  &quot;{feedback.fail.message}&quot;
+                  &quot;{selectedOptionData?.feedback || feedback.fail.message}&quot;
                 </p>
                 <button
                   onClick={handleReset}

@@ -9,6 +9,9 @@ import AddDrugModal from "../../components/AddDrugModal";
 import ViewDrugModal from "../../components/ViewDrugModal";
 import ExamModal from "../../components/ExamModal";
 import { PackageOpen, ArchiveRestore } from "lucide-react";
+import { saveDrugToLibrary } from "@/app/actions/drugs";
+import { deleteDrugFromLibrary } from "@/app/actions/deleteDrug";
+import { FDADrugResult } from "@/app/actions/fda";
 
 // Types matching the DB/UI needs
 export interface Drug {
@@ -44,28 +47,50 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
     streak: 5,
   };
 
-  const handleAddDrug = (name: string) => {
-    // Mock adding a drug for now - in a real app this would call a Server Action or API
+
+
+// ... imports
+
+  const handleAddDrug = async (fdaDrug: FDADrugResult) => {
+    // Optimistic update
     const newDrug: Drug = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: name,
-      class: "Unknown Class",
+      id: fdaDrug.id,
+      name: fdaDrug.brand_name,
+      class: fdaDrug.pharm_class[0] || "Unknown Class",
       mastery: 0,
-      color: "orange", // Default color for new drugs
-      formula: "N/A",
-      brands: "N/A",
-      manufacturer: "N/A",
-      warnings: "N/A",
-      indications: "N/A",
-      moa: "N/A",
-      dosage: "N/A",
+      color: "blue", // Default
+      formula: fdaDrug.active_ingredient || "N/A",
+      brands: fdaDrug.brand_name,
+      manufacturer: fdaDrug.manufacturer_name,
+      warnings: fdaDrug.warnings,
+      indications: fdaDrug.indications_and_usage,
+      moa: fdaDrug.mechanism_of_action,
+      dosage: fdaDrug.dosage_and_administration || "N/A",
     };
+    
     setDrugs([...drugs, newDrug]);
     setIsAddModalOpen(false);
+
+    try {
+      await saveDrugToLibrary(fdaDrug);
+    } catch (error) {
+      console.error("Failed to save drug", error);
+      // Revert if failed (optional, for now just log)
+    }
   };
 
-  const handleDeleteDrug = (id: string) => {
+
+
+  const handleDeleteDrug = async (id: string) => {
+    // Optimistic update
     setDrugs(drugs.filter((d) => d.id !== id));
+    
+    try {
+      await deleteDrugFromLibrary(id);
+    } catch (error) {
+      console.error("Failed to delete drug", error);
+      // Revert if failed (optional)
+    }
   };
 
   const handleViewDrug = (name: string) => {
@@ -80,28 +105,10 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
   return (
     <>
       <Navbar />
-      <main className="flex-grow pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+      <main className="grow pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <LibraryHeader stats={stats} onAddDrug={() => setIsAddModalOpen(true)} />
         
-        {/* Top Doctors Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-foreground mb-4">Top Doctors</h2>
-          <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-            {topDoctors.map((doc) => (
-              <a
-                key={doc.id}
-                href={`/profile/${doc.id}`}
-                className="flex flex-col items-center min-w-[100px] p-4 bg-card rounded-xl border border-border hover:border-medical-500 transition-all group"
-              >
-                <div className="w-16 h-16 rounded-full overflow-hidden mb-2 border-2 border-muted group-hover:border-medical-500 transition-colors">
-                  <img src={doc.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=House"} alt={doc.name} className="w-full h-full object-cover" />
-                </div>
-                <span className="text-sm font-bold text-foreground text-center line-clamp-1">{doc.name}</span>
-                <span className="text-xs text-muted-foreground">{doc.rank}</span>
-              </a>
-            ))}
-          </div>
-        </div>
+
 
         {drugs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -144,6 +151,7 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddDrug}
+        existingDrugIds={drugs.map((d) => d.id)}
       />
 
       <ViewDrugModal

@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import ProfileHeader from "@/components/ProfileHeader";
 import ProfileStats from "@/components/ProfileStats";
 import TrophyCase from "@/components/TrophyCase";
+import { auth } from "@/lib/auth";
 
 export default async function PublicProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const { userId } = await params;
@@ -59,13 +60,28 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
     telegram: user.telegram || undefined,
   };
 
+// ...
+
+  const session = await auth();
+  const isOwnProfile = session?.user?.id === user.id;
+  const currentUserRole = session?.user?.role;
+  
+  const canPromote = currentUserRole === "leader" && !isOwnProfile;
+  const canBan = (currentUserRole === "leader" || currentUserRole === "co-leader") && !isOwnProfile && user.role !== "leader";
+  const canDemote = currentUserRole === "leader" && user.role === "co-leader" && !isOwnProfile;
+
   return (
     <>
       <Navbar />
       <main className="grow pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <ProfileHeader 
           user={profileUser} 
-          isOwnProfile={false} 
+          isOwnProfile={isOwnProfile}
+          canPromote={canPromote}
+          canBan={canBan}
+          canDemote={canDemote}
+          targetUserId={user.id}
+          currentRole={user.role || "member"}
         />
         <ProfileStats stats={stats} />
         <TrophyCase pinnedTrophies={pinnedTrophies} stats={stats} userLevel={profileUser.level} />

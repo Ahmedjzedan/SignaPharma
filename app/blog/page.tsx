@@ -3,7 +3,7 @@ import BlogGrid, { BlogPost } from "../../components/BlogGrid";
 import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { posts, users } from "@/lib/db/schema";
-import { eq, like, and, desc, asc, sql } from "drizzle-orm";
+import { eq, like, and, desc, asc, sql, isNull } from "drizzle-orm";
 
 export const metadata: Metadata = {
   title: "SignaPharma | Community Blog",
@@ -17,7 +17,7 @@ export default async function BlogPage({
 }) {
   const { category, search, sortBy } = await searchParams;
 
-  const whereConditions = [];
+  const whereConditions = [isNull(posts.deletedAt)];
 
   if (category && typeof category === "string" && category !== "All") {
     whereConditions.push(eq(posts.category, category));

@@ -1,8 +1,10 @@
 import clsx from "clsx";
 import { stripMarkdown } from "@/lib/utils";
 import Link from "next/link";
+import ReportButton from "./ReportButton";
 
 interface BlogCardProps {
+  id: string;
   title: string;
   description: string;
   author: string;
@@ -17,6 +19,7 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({
+  id,
   title,
   description,
   author,
@@ -33,7 +36,7 @@ export default function BlogCard({
     <article
       onClick={onClick}
       className={clsx(
-        "group flex flex-col bg-card rounded-2xl border border-border shadow-sm hover:shadow-xl hover:border-primary/50 transition-all duration-300 overflow-hidden h-full cursor-pointer hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] hover:-translate-y-1 animate-slide-up",
+        "group flex flex-col bg-card rounded-2xl border border-border shadow-sm hover:border-primary/50 transition-all duration-300 overflow-hidden h-full cursor-pointer hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] hover:-translate-y-1 animate-slide-up",
         className
       )}
       style={{ animationDelay: delay }}
@@ -69,24 +72,30 @@ export default function BlogCard({
         </p>
 
         {/* Footer: Author */}
-        <div className="flex items-center gap-3 pt-4 border-t border-border">
-          <Link 
-            href={`/profile/${authorId}`} 
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-            onClick={(e) => e.stopPropagation()}
+        <div className="flex items-center justify-between pt-4 border-t border-border">
+          <div 
+            role="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.location.href = `/profile/${authorId}`;
+            }}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-full bg-muted overflow-hidden">
-              <img
-                src={avatarSeed.startsWith("/") ? avatarSeed : `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
-                alt="Author"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="text-xs">
-              <p className="font-semibold text-card-foreground hover:text-primary transition-colors">{author}</p>
-              <p className="text-muted-foreground">{role}</p>
-            </div>
-          </Link>
+              <div className="w-8 h-8 rounded-full bg-muted overflow-hidden">
+                <img
+                  src={avatarSeed.startsWith("/") ? avatarSeed : `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
+                  alt="Author"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="text-xs">
+                <p className="font-semibold text-card-foreground hover:text-primary transition-colors">{author}</p>
+                <p className="text-muted-foreground">{role}</p>
+              </div>
+          </div>
+          <div onClick={(e) => e.stopPropagation()}>
+             <ReportButton targetId={id} targetType="blog" variant="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
         </div>
       </div>
     </article>

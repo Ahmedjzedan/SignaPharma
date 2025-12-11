@@ -2,26 +2,40 @@ import { db } from "@/lib/db";
 import { drugs } from "@/lib/db/schema";
 import LibraryContent, { Drug } from "./LibraryContent";
 
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { savedDrugs } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+
 export default async function LibraryPage() {
-  // Fetch all drugs from the database
-  // In a real app, we would join with savedDrugs to get only the user's drugs
-  // For now, we'll just fetch all drugs to verify the connection
-  const dbDrugs = await db.select().from(drugs);
+  const session = await auth();
+  if (!session?.user?.id) {
+    redirect("/auth");
+  }
+
+  // Fetch only user's saved drugs
+  const userDrugs = await db
+    .select({
+      drug: drugs,
+    })
+    .from(savedDrugs)
+    .innerJoin(drugs, eq(savedDrugs.drugId, drugs.id))
+    .where(eq(savedDrugs.userId, session.user.id));
 
   // Map DB drugs to UI Drug interface
-  const mappedDrugs: Drug[] = dbDrugs.map((d) => ({
-    id: d.id,
-    name: d.name,
-    class: d.category, // Mapping category to class
+  const mappedDrugs: Drug[] = userDrugs.map(({ drug }) => ({
+    id: drug.id,
+    name: drug.brandName,
+    class: drug.category || "Unknown Class",
     mastery: 0, // Default for now
-    color: "blue", // Default for now, could be mapped from category
-    formula: "N/A", // Not in DB yet
-    brands: "N/A", // Not in DB yet
-    manufacturer: "N/A", // Not in DB yet
-    warnings: d.sideEffects || "N/A", // Using sideEffects as warnings for now
-    indications: d.description, // Using description as indications
-    moa: d.mechanismOfAction || "N/A",
-    dosage: "N/A", // Not in DB yet
+    color: "blue",
+    formula: "N/A",
+    brands: "N/A",
+    manufacturer: "N/A",
+    warnings: drug.sideEffects || "N/A",
+    indications: drug.description || "N/A",
+    moa: drug.mechanismOfAction || "N/A",
+    dosage: "N/A",
   }));
 
   // Fetch top doctors (users)

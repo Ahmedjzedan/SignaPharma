@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Clock, Eye } from "lucide-react";
+import DeletePostButton from "./DeletePostButton";
 
 interface BlogPostHeaderProps {
   title: string;
@@ -26,8 +27,9 @@ export default function BlogPostHeader({
   tags,
   gradient,
   isAuthor,
+  isAdmin,
   postId,
-}: BlogPostHeaderProps & { isAuthor?: boolean; postId?: string }) {
+}: BlogPostHeaderProps & { isAuthor?: boolean; isAdmin?: boolean; postId?: string }) {
   return (
     <>
       {/* Back Navigation */}
@@ -41,12 +43,18 @@ export default function BlogPostHeader({
         </Link>
 
         {isAuthor && postId && (
-          <Link
-            href={`/blog/edit/${postId}`}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-medical-600 bg-medical-50 hover:bg-medical-100 rounded-lg transition-colors"
-          >
-            Edit Post
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href={`/blog/edit/${postId}`}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-medical-600 bg-medical-50 hover:bg-medical-100 rounded-lg transition-colors"
+            >
+              Edit Post
+            </Link>
+            <DeletePostButton postId={postId} />
+          </div>
+        )}
+        {!isAuthor && isAdmin && postId && (
+           <DeletePostButton postId={postId} />
         )}
       </div>
 
