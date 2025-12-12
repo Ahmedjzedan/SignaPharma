@@ -25,12 +25,14 @@ export async function searchDrugs(query: string): Promise<FDADrugResult[]> {
   if (!query || query.length < 3) return [];
 
   try {
+    // Prioritize brand name matches
     const results = await db.query.drugs.findMany({
       where: or(
         like(drugs.brandName, `%${query}%`),
         like(drugs.genericName, `%${query}%`)
       ),
-      limit: 10,
+      limit: 20, // Fetch more to filter client-side if needed, though we do it here
+      orderBy: (drugs, { asc }) => [asc(drugs.brandName)], // Sort by brand name
     });
 
     return results.map((item) => ({

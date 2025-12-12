@@ -1,11 +1,12 @@
 import { db } from "@/lib/db";
-import { reports, cases, users } from "@/lib/db/schema";
+import { reports, cases, users, drugRequests } from "@/lib/db/schema";
 import { eq, count } from "drizzle-orm";
-import { Flag, FileText, Users } from "lucide-react";
+import { Flag, FileText, Users, Pill } from "lucide-react";
 
 export default async function AdminDashboard() {
   const pendingReports = await db.select({ count: count() }).from(reports).where(eq(reports.status, "pending"));
   const pendingCases = await db.select({ count: count() }).from(cases).where(eq(cases.status, "pending"));
+  const pendingDrugRequests = await db.select({ count: count() }).from(drugRequests).where(eq(drugRequests.status, "pending"));
   const totalUsers = await db.select({ count: count() }).from(users);
 
   return (
@@ -41,6 +42,15 @@ export default async function AdminDashboard() {
           </div>
           <div className="text-2xl font-bold">{totalUsers[0].count}</div>
           <p className="text-xs text-muted-foreground">Registered members</p>
+        </div>
+
+        <div className="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
+          <div className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <h3 className="tracking-tight text-sm font-medium">Drug Requests</h3>
+            <Pill className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <div className="text-2xl font-bold">{pendingDrugRequests[0].count}</div>
+          <p className="text-xs text-muted-foreground">Pending approval</p>
         </div>
       </div>
     </div>

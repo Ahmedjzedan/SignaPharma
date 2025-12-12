@@ -8,10 +8,12 @@ import DrugCard from "../../components/DrugCard";
 import AddDrugModal from "../../components/AddDrugModal";
 import ViewDrugModal from "../../components/ViewDrugModal";
 import ExamModal from "../../components/ExamModal";
+import RequestDrugModal from "../../components/RequestDrugModal";
 import { PackageOpen, ArchiveRestore } from "lucide-react";
 import { saveDrugToLibrary } from "@/app/actions/drugs";
 import { deleteDrugFromLibrary } from "@/app/actions/deleteDrug";
 import { FDADrugResult } from "@/app/actions/fda";
+import { getDrugColor } from "@/lib/utils";
 
 // Types matching the DB/UI needs
 export interface Drug {
@@ -39,6 +41,8 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [viewDrug, setViewDrug] = useState<Drug | null>(null);
   const [examDrug, setExamDrug] = useState<string | null>(null);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [requestQuery, setRequestQuery] = useState("");
 
   const stats = {
     collected: drugs.length,
@@ -51,6 +55,10 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
 
 // ... imports
 
+
+
+// ... imports
+
   const handleAddDrug = async (fdaDrug: FDADrugResult) => {
     // Optimistic update
     const newDrug: Drug = {
@@ -58,7 +66,7 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
       name: fdaDrug.brand_name,
       class: fdaDrug.pharm_class[0] || "Unknown Class",
       mastery: 0,
-      color: "blue", // Default
+      color: getDrugColor(fdaDrug.brand_name), // Default
       formula: fdaDrug.active_ingredient || "N/A",
       brands: fdaDrug.brand_name,
       manufacturer: fdaDrug.manufacturer_name,
@@ -129,12 +137,9 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
               <PackageOpen className="w-24 h-24 text-slate-300" />
               <ArchiveRestore className="w-8 h-8 text-slate-400 absolute top-10 right-10 opacity-50" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">
-              Your cabinet is empty
-            </h2>
-            <p className="text-slate-500 max-w-md text-center mb-8">
-              It&apos;s a little dusty in here. Search for drugs you encounter in
-              practice to start building your arsenal.
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">Your cabinet is empty</h3>
+            <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-xs mx-auto">
+              Start building your digital pharmacy by adding drugs you want to master.
             </p>
             <button
               onClick={() => setIsAddModalOpen(true)}
@@ -151,6 +156,11 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddDrug}
+        onRequest={(query) => {
+          setIsAddModalOpen(false);
+          setRequestQuery(query);
+          setIsRequestModalOpen(true);
+        }}
         existingDrugIds={drugs.map((d) => d.id)}
       />
 
@@ -164,6 +174,12 @@ export default function LibraryContent({ initialDrugs, topDoctors }: LibraryCont
         isOpen={!!examDrug}
         onClose={() => setExamDrug(null)}
         drugName={examDrug || ""}
+      />
+
+      <RequestDrugModal
+        isOpen={isRequestModalOpen}
+        onClose={() => setIsRequestModalOpen(false)}
+        initialQuery={requestQuery}
       />
     </>
   );

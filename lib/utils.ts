@@ -15,3 +15,12 @@ export function stripMarkdown(text: string) {
     .replace(/\n/g, ' ') // Replace newlines with spaces
     .trim();
 }
+
+export function getDrugColor(name: string): "blue" | "purple" | "green" | "orange" {
+  const colors = ["blue", "purple", "green", "orange"] as const;
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+}

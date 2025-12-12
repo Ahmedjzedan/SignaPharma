@@ -229,8 +229,31 @@ export const postLikes = sqliteTable('post_likes', {
   unq: unique().on(t.userId, t.postId),
 }));
 
+// Drug Requests
+export const drugRequests = sqliteTable('drug_requests', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text('user_id').references(() => users.id),
+  drugName: text('drug_name').notNull(),
+  status: text('status').default('pending'), // 'pending', 'approved', 'rejected'
+  adminFeedback: text('admin_feedback'),
+  createdDrugId: text('created_drug_id').references(() => drugs.id),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+});
+
 // Relations
 import { relations } from 'drizzle-orm';
+
+export const drugRequestsRelations = relations(drugRequests, ({ one }) => ({
+  user: one(users, {
+    fields: [drugRequests.userId],
+    references: [users.id],
+  }),
+  createdDrug: one(drugs, {
+    fields: [drugRequests.createdDrugId],
+    references: [drugs.id],
+  }),
+}));
 
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(posts),

@@ -64,7 +64,7 @@ export default function DrugCard({
   return (
     <div
       className={clsx(
-        "group bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-xl transition-all duration-300 animate-slide-up relative overflow-hidden",
+        "group bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-xl transition-all duration-300 animate-slide-up relative overflow-hidden flex flex-col h-full",
         styles.border,
         styles.shadow
       )}
@@ -92,23 +92,25 @@ export default function DrugCard({
         </button>
       </div>
 
-      <h3 className="text-lg font-bold text-card-foreground mb-1">{name}</h3>
-      <p className="text-xs text-muted-foreground mb-4 font-mono">{drugClass}</p>
+      <div className="grow">
+        <h3 className="text-lg font-bold text-card-foreground mb-1">{name}</h3>
+        <p className="text-xs text-muted-foreground mb-4 font-mono">{drugClass}</p>
 
-      <div className="space-y-2">
-        <div className="flex justify-between text-xs font-medium">
-          <span className="text-muted-foreground">Mastery Level</span>
-          <span className={styles.text}>{mastery}%</span>
-        </div>
-        <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
-          <div
-            className={clsx("h-1.5 rounded-full", styles.bar)}
-            style={{ width: `${mastery}%` }}
-          ></div>
+        <div className="space-y-2 mb-6">
+          <div className="flex justify-between text-xs font-medium">
+            <span className="text-muted-foreground">Mastery Level</span>
+            <span className={styles.text}>{mastery}%</span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+            <div
+              className={clsx("h-1.5 rounded-full", styles.bar)}
+              style={{ width: `${mastery}%` }}
+            ></div>
+          </div>
         </div>
       </div>
 
-      <div className="mt-6 flex gap-2">
+      <div className="mt-auto flex gap-2">
         <button
           onClick={() => onExam(name)}
           className="flex-1 px-3 py-2 bg-foreground hover:bg-foreground/90 text-background text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1"

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { X, Search, Plus, Loader2, Dice5, Heart, Wind, Stethoscope } from "lucide-react";
+import { X, Search, Plus, Loader2, Dice5, Heart, Wind, Stethoscope, Pill } from "lucide-react";
 import { searchDrugs, FDADrugResult } from "@/app/actions/fda";
+import clsx from "clsx";
 
 interface AddDrugModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAdd: (drug: FDADrugResult) => void;
+  onRequest: (query: string) => void;
   existingDrugIds?: string[];
 }
 
@@ -13,13 +15,14 @@ export default function AddDrugModal({
   isOpen,
   onClose,
   onAdd,
+  onRequest,
   existingDrugIds = [],
 }: AddDrugModalProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<FDADrugResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Simple debounce logic if hook not available
+  // Simple debounce logic
   const [debouncedQuery, setDebouncedQuery] = useState(query);
 
   useEffect(() => {
@@ -58,30 +61,16 @@ export default function AddDrugModal({
     setIsLoading(true);
     setQuery("Random Drug..."); // Visual feedback
     try {
-      // List of common drugs to pick from for "random" effect
       const commonDrugs = ["Aspirin", "Ibuprofen", "Acetaminophen", "Lisinopril", "Metformin", "Atorvastatin", "Amoxicillin", "Omeprazole", "Losartan", "Albuterol"];
       const randomTerm = commonDrugs[Math.floor(Math.random() * commonDrugs.length)];
       
-      // Perform search with the random term
       const data = await searchDrugs(randomTerm);
-      
-      // Filter and pick one
       const filteredData = data.filter(drug => !existingDrugIds.includes(drug.id));
       
       if (filteredData.length > 0) {
-        // Pick a random one from the results to be even more random
-        const randomDrug = filteredData[Math.floor(Math.random() * filteredData.length)];
-        onAdd(randomDrug); // Directly add it? Or show it? User said "chose a random drug", usually implies picking it.
-        // But maybe better to show it as a result? 
-        // "make a card with a dice icon that will chose a random drug"
-        // Let's just set the query to the random term and let the user see results, 
-        // OR better, simulate a "I'm feeling lucky" and just add it?
-        // "rename the button to add drug to library" -> "chose a random drug"
-        // Let's show the results for the random term for now, it's safer UX.
-        // Actually, let's set the query to the random term.
         setQuery(randomTerm);
       } else {
-        setQuery(randomTerm); // Let the normal search handle "no results" or show what was found even if filtered
+        setQuery(randomTerm);
       }
     } catch (error) {
       console.error("Failed to fetch random drug", error);
@@ -95,124 +84,194 @@ export default function AddDrugModal({
 
   return (
     <div
-      className="fixed inset-0 z-50"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
     >
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
+      <div 
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
 
-      {/* Modal Panel */}
-      <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0 pointer-events-none">
-        <div className="relative transform overflow-hidden rounded-2xl bg-card text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl pointer-events-auto border border-border">
-          <div className="bg-muted px-4 py-3 border-b border-border flex justify-between items-center">
-            <h3 className="font-bold text-card-foreground">Add to Library</h3>
-            <button
+      <div className="relative w-full max-w-2xl h-[600px] flex flex-col bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all">
+        
+        {/* Header */}
+        <div className="relative p-6 pb-4 border-b border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl z-10">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-medical-600 to-medical-400 dark:from-medical-400 dark:to-medical-200">
+                Add to Library
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Search the FDA database for approved medications</p>
+            </div>
+            <button 
               onClick={onClose}
-              className="text-muted-foreground hover:text-foreground"
+              className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
+        </div>
 
-          <div className="p-6">
-            {/* Search Input */}
-            <div className="relative mb-6">
-              <Search className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search by generic or brand name..."
-                className="w-full pl-10 pr-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent text-sm text-foreground placeholder:text-muted-foreground"
-                autoFocus
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
+        {/* Search Bar */}
+        <div className="p-6 pb-2">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+              <Search className="w-5 h-5 text-slate-400 group-focus-within:text-medical-500 transition-colors" />
             </div>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by brand name (e.g. Lipitor)..."
+              className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-medical-500/50 focus:border-medical-500 transition-all shadow-sm"
+              autoFocus
+            />
+            {isLoading && (
+              <div className="absolute inset-y-0 right-4 flex items-center">
+                <Loader2 className="w-5 h-5 text-medical-500 animate-spin" />
+              </div>
+            )}
+            {query && !isLoading && (
+              <button 
+                onClick={() => setQuery("")}
+                className="absolute inset-y-0 right-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
 
-            {/* Categories / Results */}
-            <div className="space-y-2 max-h-[60vh] overflow-y-auto custom-scrollbar">
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+          {!query && (
+            <div className="animate-fade-in">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Suggestions</h3>
+              </div>
               
-              {!query && !isLoading && (
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <button 
-                    onClick={handleRandomClick}
-                    className="flex flex-col items-center justify-center p-4 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl transition-all group"
-                  >
-                    <Dice5 className="w-8 h-8 text-blue-500 mb-2 group-hover:scale-110 transition-transform" />
-                    <span className="text-sm font-bold text-blue-700 dark:text-blue-300">Random Pick</span>
-                  </button>
-                  
-                  <button 
-                    onClick={() => handleCategoryClick("Cardiovascular")}
-                    className="flex flex-col items-center justify-center p-4 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl transition-all group"
-                  >
-                    <Heart className="w-8 h-8 text-red-500 mb-2 group-hover:scale-110 transition-transform" />
-                    <span className="text-sm font-bold text-red-700 dark:text-red-300">Heart</span>
-                  </button>
+              <div className="grid grid-cols-2 gap-3 mb-8">
+                <button 
+                  onClick={() => setQuery("Heart")}
+                  className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-rose-50 dark:hover:bg-rose-900/20 border border-slate-200 dark:border-slate-700 hover:border-rose-200 dark:hover:border-rose-800 rounded-2xl transition-all group text-left"
+                >
+                  <div className="p-2 bg-white dark:bg-slate-800 rounded-xl text-rose-500 shadow-sm group-hover:scale-110 transition-transform">
+                    <Heart className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-700 dark:text-slate-200 group-hover:text-rose-600 dark:group-hover:text-rose-400">Heart</span>
+                    <span className="text-xs text-slate-400">Cardiology</span>
+                  </div>
+                </button>
 
-                  <button 
-                    onClick={() => handleCategoryClick("Respiratory")}
-                    className="flex flex-col items-center justify-center p-4 bg-cyan-50 dark:bg-cyan-900/20 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 rounded-xl transition-all group"
-                  >
-                    <Wind className="w-8 h-8 text-cyan-500 mb-2 group-hover:scale-110 transition-transform" />
-                    <span className="text-sm font-bold text-cyan-700 dark:text-cyan-300">Lungs</span>
-                  </button>
+                <button 
+                  onClick={() => setQuery("Lungs")}
+                  className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-sky-50 dark:hover:bg-sky-900/20 border border-slate-200 dark:border-slate-700 hover:border-sky-200 dark:hover:border-sky-800 rounded-2xl transition-all group text-left"
+                >
+                  <div className="p-2 bg-white dark:bg-slate-800 rounded-xl text-sky-500 shadow-sm group-hover:scale-110 transition-transform">
+                    <Wind className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-700 dark:text-slate-200 group-hover:text-sky-600 dark:group-hover:text-sky-400">Lungs</span>
+                    <span className="text-xs text-slate-400">Respiratory</span>
+                  </div>
+                </button>
 
-                  <button 
-                    onClick={() => handleCategoryClick("Infection")}
-                    className="flex flex-col items-center justify-center p-4 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-xl transition-all group"
-                  >
-                    <Stethoscope className="w-8 h-8 text-purple-500 mb-2 group-hover:scale-110 transition-transform" />
-                    <span className="text-sm font-bold text-purple-700 dark:text-purple-300">Diseases</span>
-                  </button>
-                </div>
-              )}
+                <button 
+                  onClick={() => setQuery("Infection")}
+                  className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border border-slate-200 dark:border-slate-700 hover:border-emerald-200 dark:hover:border-emerald-800 rounded-2xl transition-all group text-left"
+                >
+                  <div className="p-2 bg-white dark:bg-slate-800 rounded-xl text-emerald-500 shadow-sm group-hover:scale-110 transition-transform">
+                    <Stethoscope className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-700 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">Diseases</span>
+                    <span className="text-xs text-slate-400">Infectious</span>
+                  </div>
+                </button>
 
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-                {isLoading ? "Searching..." : results.length > 0 ? "Results" : query.length >= 3 ? "No Results" : "Suggestions"}
-              </p>
+                <button 
+                  onClick={() => {
+                    const randomDrugs = ["Aspirin", "Ibuprofen", "Lisinopril", "Metformin", "Atorvastatin"];
+                    setQuery(randomDrugs[Math.floor(Math.random() * randomDrugs.length)]);
+                  }}
+                  className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-200 dark:hover:border-violet-800 rounded-2xl transition-all group text-left"
+                >
+                  <div className="p-2 bg-white dark:bg-slate-800 rounded-xl text-violet-500 shadow-sm group-hover:scale-110 transition-transform">
+                    <Dice5 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-700 dark:text-slate-200 group-hover:text-violet-600 dark:group-hover:text-violet-400">Random Pick</span>
+                    <span className="text-xs text-slate-400">Surprise me</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Results State */}
+          {(query || isLoading) && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  {isLoading ? "Searching Database..." : results.length > 0 ? `Found ${results.length} Results` : "No Results"}
+                </p>
+              </div>
 
               {isLoading && (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-8 h-8 text-medical-500 animate-spin" />
+                <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                  <Loader2 className="w-10 h-10 text-medical-500 animate-spin mb-3" />
+                  <p className="text-sm font-medium">Scanning FDA Database...</p>
                 </div>
               )}
 
               {!isLoading && results.length === 0 && query.length >= 3 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  No drugs found matching &quot;{query}&quot;
+                <div className="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                  <p className="text-slate-500 dark:text-slate-400 font-medium">No drugs found matching &quot;{query}&quot;</p>
+                  <p className="text-xs text-slate-400 mt-1 mb-4">Try searching for a different brand name</p>
+                  <button
+                    onClick={() => onRequest(query)}
+                    className="px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-bold text-medical-600 dark:text-medical-400 hover:border-medical-500 transition-colors shadow-sm"
+                  >
+                    Request &quot;{query}&quot;
+                  </button>
                 </div>
               )}
 
               {!isLoading && results.map((drug) => (
-                <div key={drug.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted border border-transparent hover:border-border transition-all cursor-pointer group">
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded shrink-0 flex items-center justify-center font-bold text-xs uppercase">
-                      {drug.brand_name.substring(0, 2)}
+                <div 
+                  key={drug.id}
+                  className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-white dark:bg-slate-800 rounded-xl text-medical-500 shadow-sm">
+                      <Pill className="w-6 h-6" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-bold text-card-foreground text-sm truncate">
-                        {drug.brand_name} <span className="text-muted-foreground font-normal">({drug.generic_name})</span>
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {drug.pharm_class[0] || "Unknown Class"}
-                      </p>
+                    <div>
+                      <h4 className="font-bold text-slate-900 dark:text-white text-lg">{drug.brand_name}</h4>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">{drug.generic_name}</p>
+                      <div className="flex gap-2 mt-1">
+                        {drug.pharm_class.slice(0, 1).map((cls, i) => (
+                          <span key={i} className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full">
+                            {cls}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
+                  
                   <button
                     onClick={() => onAdd(drug)}
-                    className="w-8 h-8 rounded-full bg-medical-50 text-medical-600 shrink-0 flex items-center justify-center hover:bg-medical-600 hover:text-white transition-colors ml-2"
+                    className="p-3 bg-medical-600 hover:bg-medical-500 text-white rounded-xl shadow-lg shadow-medical-500/20 transform group-hover:scale-105 transition-all"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-5 h-5" />
                   </button>
                 </div>
               ))}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

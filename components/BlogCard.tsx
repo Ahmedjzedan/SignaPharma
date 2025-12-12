@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { stripMarkdown } from "@/lib/utils";
 import Link from "next/link";
 import ReportButton from "./ReportButton";
+import { Bookmark } from "lucide-react"; // Added Bookmark import
 
 interface BlogCardProps {
   id: string;
@@ -45,6 +46,7 @@ export default function BlogCard({
       <div className={clsx("h-48 relative overflow-hidden", gradient)}>
         <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
         {/* Optional "Today" badge if needed, can be passed as prop later */}
+        {/* Bookmark icon and Report button */}
       </div>
 
       {/* Content */}
@@ -93,7 +95,10 @@ export default function BlogCard({
                 <p className="text-muted-foreground">{role}</p>
               </div>
           </div>
-          <div onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+             <button className="p-2 text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100" title="Save to Wishlist">
+                <Bookmark className="w-4 h-4" />
+             </button>
              <ReportButton targetId={id} targetType="blog" variant="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </div>

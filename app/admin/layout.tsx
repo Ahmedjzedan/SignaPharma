@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import { LayoutDashboard, Flag, FileText, Users } from "lucide-react";
+import { LayoutDashboard, Flag, FileText, Users, Pill } from "lucide-react";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -37,6 +37,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                <Users className="w-4 h-4" />
                Users
              </Link>
+             <Link href="/admin/requests" className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">
+                <Pill className="w-4 h-4" />
+                Drug Requests
+              </Link>
            </nav>
         </aside>
         <main className="grow md:ml-64 p-8 bg-muted/10">

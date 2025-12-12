@@ -7,6 +7,8 @@ import { redirect } from "next/navigation";
 import { savedDrugs } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
+import { getDrugColor } from "@/lib/utils";
+
 export default async function LibraryPage() {
   const session = await auth();
   if (!session?.user?.id) {
@@ -28,7 +30,7 @@ export default async function LibraryPage() {
     name: drug.brandName,
     class: drug.category || "Unknown Class",
     mastery: 0, // Default for now
-    color: "blue",
+    color: getDrugColor(drug.brandName),
     formula: "N/A",
     brands: "N/A",
     manufacturer: "N/A",
