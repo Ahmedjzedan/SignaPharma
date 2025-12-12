@@ -44,14 +44,14 @@ export default function RequestDrugModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
 
-      <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-slate-900 shadow-2xl transition-all border border-slate-200 dark:border-slate-800">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="font-bold text-lg text-slate-900 dark:text-white">Request Missing Drug</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+      <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-background shadow-2xl transition-all border border-border">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h3 className="font-bold text-lg text-foreground">Request Missing Drug</h3>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -62,19 +62,19 @@ export default function RequestDrugModal({
               <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
                 <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
               </div>
-              <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Request Sent!</h4>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">
+              <h4 className="text-xl font-bold text-foreground mb-2">Request Sent!</h4>
+              <p className="text-muted-foreground text-sm">
                 We&apos;ll review your request and add <strong>{drugName}</strong> to the library soon.
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 Can&apos;t find what you&apos;re looking for? Let us know and we&apos;ll use our AI agents to fetch and verify the data for you.
               </p>
               
               <div className="mb-6">
-                <label htmlFor="drugName" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                <label htmlFor="drugName" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
                   Drug Name
                 </label>
                 <input
@@ -83,7 +83,7 @@ export default function RequestDrugModal({
                   value={drugName}
                   onChange={(e) => setDrugName(e.target.value)}
                   placeholder="e.g. Kryptonite"
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-500 transition-all font-medium"
+                  className="w-full px-4 py-3 bg-muted/50 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all font-medium text-foreground placeholder-muted-foreground"
                   autoFocus
                   required
                 />
@@ -93,14 +93,14 @@ export default function RequestDrugModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+                  className="px-4 py-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || !drugName.trim()}
-                  className="px-6 py-2 bg-medical-600 hover:bg-medical-700 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-medical-600/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <>

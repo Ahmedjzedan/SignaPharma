@@ -21,6 +21,14 @@ export default async function AdminRequestsPage() {
     },
   });
 
+  console.log("Admin Requests Debug:", JSON.stringify(requests.map(r => ({ 
+    id: r.id, 
+    drugName: r.drugName, 
+    status: r.status, 
+    createdDrugId: r.createdDrugId, 
+    hasCreatedDrug: !!r.createdDrug 
+  })), null, 2));
+
   return (
     <div className="space-y-6">
       <div>
