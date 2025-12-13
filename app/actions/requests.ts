@@ -16,6 +16,19 @@ export async function requestDrug(drugName: string) {
   }
 
   try {
+    // Check for existing pending request for this drug (case-insensitive)
+    const existingRequest = await db.query.drugRequests.findFirst({
+      where: (requests, { and, eq, like }) => and(
+        like(requests.drugName, drugName.trim()),
+        eq(requests.status, 'pending')
+      ),
+    });
+
+    if (existingRequest) {
+      // Silently succeed
+      return { success: true };
+    }
+
     await db.insert(drugRequests).values({
       userId: session.user.id,
       drugName: drugName.trim(),

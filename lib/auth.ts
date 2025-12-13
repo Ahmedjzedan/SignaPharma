@@ -16,8 +16,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
+  debug: false, // Disable debugging to clean up console
+  trustHost: true, // Trust localhost
   callbacks: {
     async session({ session, user }) {
       if (session.user) {

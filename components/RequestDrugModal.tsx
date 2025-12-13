@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Send, Loader2, CheckCircle } from "lucide-react";
 import { requestDrug } from "@/app/actions/requests";
 
@@ -18,6 +18,12 @@ export default function RequestDrugModal({
   const [drugName, setDrugName] = useState(initialQuery);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setDrugName(initialQuery);
+    }
+  }, [isOpen, initialQuery]);
 
   if (!isOpen) return null;
 

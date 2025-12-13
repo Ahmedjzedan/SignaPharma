@@ -16,13 +16,16 @@ export default async function LibraryPage() {
   }
 
   // Fetch only user's saved drugs
-  const userDrugs = await db
-    .select({
-      drug: drugs,
-    })
-    .from(savedDrugs)
-    .innerJoin(drugs, eq(savedDrugs.drugId, drugs.id))
-    .where(eq(savedDrugs.userId, session.user.id));
+  const userDrugs = await db.query.savedDrugs.findMany({
+    where: eq(savedDrugs.userId, session.user.id),
+    with: {
+      drug: {
+        with: {
+          manufacturer: true,
+        }
+      }
+    }
+  });
 
   // Map DB drugs to UI Drug interface
   const mappedDrugs: Drug[] = userDrugs.map(({ drug }) => ({
@@ -31,13 +34,13 @@ export default async function LibraryPage() {
     class: drug.category || "Unknown Class",
     mastery: 0, // Default for now
     color: getDrugColor(drug.brandName),
-    formula: "N/A",
-    brands: "N/A",
-    manufacturer: "N/A",
-    warnings: drug.sideEffects || "N/A",
-    indications: drug.description || "N/A",
+    formula: drug.formula || "N/A",
+    brands: drug.brandName,
+    manufacturer: drug.manufacturer?.name || "N/A",
+    warnings: drug.boxedWarning || drug.sideEffects || "N/A",
+    indications: drug.indicationsAndUsage || drug.description || "N/A",
     moa: drug.mechanismOfAction || "N/A",
-    dosage: "N/A",
+    dosage: drug.dosageAndAdministration || "N/A",
   }));
 
   // Fetch top doctors (users)

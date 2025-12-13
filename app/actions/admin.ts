@@ -10,70 +10,81 @@ export async function approveDrugRequest(requestId: string, drugName: string) {
   try {
     // 1. Fetch data from Gemini
     console.log(`🤖 Fetching details for ${drugName} from Gemini...`);
-    const aiData = await fetchDrugDetailsFromGemini(drugName);
-    console.log(`📦 Gemini response received for ${drugName}`);
+    const aiDataList = await fetchDrugDetailsFromGemini(drugName);
+    console.log(`📦 Gemini response received for ${drugName}: ${Array.isArray(aiDataList) ? aiDataList.length : 1} items`);
     
-    if (!aiData) {
+    if (!aiDataList || (Array.isArray(aiDataList) && aiDataList.length === 0)) {
         throw new Error("AI could not find data for this drug");
     }
 
-    // 2. Save to Database (Reuse logic from seed script essentially)
-    
-    // Handle Manufacturer
-    let manufacturerId;
-    const existingManufacturer = await db.query.manufacturers.findFirst({
-        where: eq(manufacturers.name, aiData.manufacturerName)
-    });
+    // Normalize to array if it returned a single object (backward compatibility)
+    const drugsToCreate = Array.isArray(aiDataList) ? aiDataList : [aiDataList];
+    let firstCreatedDrugId = null;
 
-    if (existingManufacturer) {
-        manufacturerId = existingManufacturer.id;
-    } else {
-        const newManufacturer = await db.insert(manufacturers).values({
-            name: aiData.manufacturerName
-        }).returning();
-        manufacturerId = newManufacturer[0].id;
+    for (const aiData of drugsToCreate) {
+        // 2. Save to Database (Reuse logic from seed script essentially)
+        
+        // Handle Manufacturer
+        let manufacturerId;
+        const existingManufacturer = await db.query.manufacturers.findFirst({
+            where: eq(manufacturers.name, aiData.manufacturerName)
+        });
+
+        if (existingManufacturer) {
+            manufacturerId = existingManufacturer.id;
+        } else {
+            const newManufacturer = await db.insert(manufacturers).values({
+                name: aiData.manufacturerName
+            }).returning();
+            manufacturerId = newManufacturer[0].id;
+        }
+
+        // Handle Class
+        let classId;
+        const existingClass = await db.query.drugClasses.findFirst({
+            where: eq(drugClasses.name, aiData.className)
+        });
+
+        if (existingClass) {
+            classId = existingClass.id;
+        } else {
+            const newClass = await db.insert(drugClasses).values({
+                name: aiData.className
+            }).returning();
+            classId = newClass[0].id;
+        }
+
+        // Insert Drug
+        const drugId = crypto.randomUUID();
+        await db.insert(drugs).values({
+            id: drugId,
+            brandName: aiData.brandName,
+            genericName: aiData.genericName,
+            manufacturerId: manufacturerId,
+            classId: classId,
+            description: aiData.indications,
+            category: aiData.className,
+            mechanismOfAction: aiData.mechanismOfAction,
+            sideEffects: aiData.sideEffects,
+            boxedWarning: aiData.boxedWarning,
+            formula: aiData.formula,
+            indicationsAndUsage: aiData.indications,
+            dosageAndAdministration: aiData.dosage,
+        });
+
+        if (!firstCreatedDrugId) {
+            firstCreatedDrugId = drugId;
+        }
     }
-
-    // Handle Class
-    let classId;
-    const existingClass = await db.query.drugClasses.findFirst({
-        where: eq(drugClasses.name, aiData.className)
-    });
-
-    if (existingClass) {
-        classId = existingClass.id;
-    } else {
-        const newClass = await db.insert(drugClasses).values({
-            name: aiData.className
-        }).returning();
-        classId = newClass[0].id;
-    }
-
-    // Insert Drug
-    const drugId = crypto.randomUUID();
-    await db.insert(drugs).values({
-        id: drugId,
-        brandName: aiData.brandName,
-        genericName: aiData.genericName,
-        manufacturerId: manufacturerId,
-        classId: classId,
-        description: aiData.indications,
-        category: aiData.className,
-        mechanismOfAction: aiData.mechanismOfAction,
-        sideEffects: aiData.sideEffects,
-        boxedWarning: aiData.boxedWarning,
-        formula: aiData.formula,
-        indicationsAndUsage: aiData.indications,
-        dosageAndAdministration: aiData.dosage,
-    });
 
     // 3. Update Request Status
-    console.log(`✅ Drug created with ID: ${drugId}`);
+    // We link the request to the FIRST created drug, but all are added to the library.
+    console.log(`✅ Drugs created. Linking request to: ${firstCreatedDrugId}`);
     await db.update(drugRequests)
       .set({ 
         status: "approved", 
         updatedAt: new Date(),
-        createdDrugId: drugId 
+        createdDrugId: firstCreatedDrugId 
       })
       .where(eq(drugRequests.id, requestId));
 
@@ -97,6 +108,17 @@ export async function rejectDrugRequest(requestId: string) {
   } catch (error) {
     console.error("Failed to reject request:", error);
     return { success: false, error: "Failed to reject request" };
+  }
+}
+
+export async function deleteDrugRequest(requestId: string) {
+  try {
+    await db.delete(drugRequests).where(eq(drugRequests.id, requestId));
+    revalidatePath("/admin/requests");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete request:", error);
+    return { success: false, error: "Failed to delete request" };
   }
 }
 

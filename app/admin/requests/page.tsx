@@ -1,15 +1,18 @@
 import { db } from "@/lib/db";
 import { drugRequests, users } from "@/lib/db/schema";
-import { desc, eq } from "drizzle-orm";
-import { Check, X, Clock, Eye, Edit, Trash2 } from "lucide-react";
-import { approveDrugRequest, rejectDrugRequest } from "@/app/actions/admin";
+import { desc, eq, isNull } from "drizzle-orm";
+import { Check, X, Clock, Eye, Edit, Trash2, Layers } from "lucide-react";
+import { approveDrugRequest, rejectDrugRequest, deleteDrugRequest } from "@/app/actions/admin";
+import { addToBatch } from "@/app/actions/admin-batch";
 
 import AdminDrugSearch from "@/components/admin/AdminDrugSearch";
 import ViewDrugModal from "@/components/admin/ViewDrugModal";
+import Link from "next/link";
 
 export default async function AdminRequestsPage() {
   const requests = await db.query.drugRequests.findMany({
     orderBy: [desc(drugRequests.createdAt)],
+    where: isNull(drugRequests.batchId), // Only show unbatched requests
     with: {
       user: true,
       createdDrug: {
@@ -21,19 +24,24 @@ export default async function AdminRequestsPage() {
     },
   });
 
-  console.log("Admin Requests Debug:", JSON.stringify(requests.map(r => ({ 
-    id: r.id, 
-    drugName: r.drugName, 
-    status: r.status, 
-    createdDrugId: r.createdDrugId, 
-    hasCreatedDrug: !!r.createdDrug 
-  })), null, 2));
-
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Drug Requests</h1>
-        <p className="text-muted-foreground">Manage user-submitted drug requests or add new drugs.</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Drug Requests</h1>
+          <p className="text-muted-foreground">Manage user-submitted drug requests or add new drugs.</p>
+        </div>
+        <Link 
+          href="/admin/batches" 
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors"
+          style={{
+            backgroundColor: 'hsl(var(--btn-manage-bg))',
+            color: 'hsl(var(--btn-manage-text))',
+          }}
+        >
+          <Layers className="w-4 h-4" />
+          Manage Batches
+        </Link>
       </div>
 
       <AdminDrugSearch />
@@ -42,7 +50,7 @@ export default async function AdminRequestsPage() {
         {requests.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground">
             <Clock className="w-12 h-12 mx-auto mb-4 opacity-20" />
-            <p>No requests found</p>
+            <p>No pending requests found</p>
           </div>
         ) : (
           <div className="divide-y divide-border">
@@ -53,11 +61,14 @@ export default async function AdminRequestsPage() {
                     <h3 className="text-lg font-bold text-foreground">
                       {request.drugName}
                     </h3>
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase ${
-                      request.status === 'approved' ? 'bg-green-600 text-white dark:bg-green-900/50 dark:text-green-300' :
-                      request.status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                      'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                    }`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase`} style={{
+                      backgroundColor: request.status === 'approved' ? 'hsl(var(--status-approved-bg))' :
+                                     request.status === 'rejected' ? 'hsl(var(--status-rejected-bg))' :
+                                     'hsl(var(--status-pending-bg))',
+                      color: request.status === 'approved' ? 'hsl(var(--status-approved-text))' :
+                             request.status === 'rejected' ? 'hsl(var(--status-rejected-text))' :
+                             'hsl(var(--status-pending-text))'
+                    }}>
                       {request.status}
                     </span>
                   </div>
@@ -84,13 +95,13 @@ export default async function AdminRequestsPage() {
                       
                       <form action={async () => {
                         "use server";
-                        await approveDrugRequest(request.id, request.drugName);
+                        await addToBatch(request.id);
                       }}>
                         <button
                           type="submit"
-                          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
                         >
-                          <Check className="w-4 h-4" /> Approve & AI Fetch
+                          <Layers className="w-4 h-4" /> Add to Batch
                         </button>
                       </form>
                     </>
@@ -98,21 +109,17 @@ export default async function AdminRequestsPage() {
 
                   {request.status === 'approved' && (
                     <div className="flex items-center gap-2">
-                       {/* View Drug Modal Trigger */}
                        <ViewDrugModal drug={request.createdDrug} />
                        
-                       {/* Edit Button (Placeholder for now) */}
                        <button className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Edit">
                           <Edit className="w-5 h-5" />
                        </button>
 
-                       {/* Delete Request Button */}
                        <form action={async () => {
                           "use server";
-                          // Implement delete request action if needed, or reuse reject
-                          await rejectDrugRequest(request.id); // Using reject as "delete" for now or we can make a delete action
+                          await deleteDrugRequest(request.id);
                        }}>
-                          <button className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors" title="Delete Request">
+                          <button className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors" title="Remove from list">
                             <Trash2 className="w-5 h-5" />
                           </button>
                        </form>
@@ -122,8 +129,7 @@ export default async function AdminRequestsPage() {
                   {request.status === 'rejected' && (
                      <form action={async () => {
                         "use server";
-                         // Allow deleting rejected requests
-                        await rejectDrugRequest(request.id); // Or a real delete
+                        await deleteDrugRequest(request.id);
                      }}>
                         <button className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors" title="Delete">
                           <Trash2 className="w-5 h-5" />

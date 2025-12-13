@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { X, Search, Plus, Loader2, Dice5, Heart, Wind, Stethoscope, Pill } from "lucide-react";
 import { searchDrugs, FDADrugResult } from "@/app/actions/fda";
+import { getRandomDrug } from "@/app/actions/drugs";
+import { toast } from "sonner";
 import clsx from "clsx";
 
 interface AddDrugModalProps {
@@ -9,6 +11,7 @@ interface AddDrugModalProps {
   onAdd: (drug: FDADrugResult) => void;
   onRequest: (query: string) => void;
   existingDrugIds?: string[];
+  existingDrugNames?: string[];
 }
 
 export default function AddDrugModal({
@@ -17,6 +20,7 @@ export default function AddDrugModal({
   onAdd,
   onRequest,
   existingDrugIds = [],
+  existingDrugNames = [],
 }: AddDrugModalProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<FDADrugResult[]>([]);
@@ -40,9 +44,7 @@ export default function AddDrugModal({
       setIsLoading(true);
       try {
         const data = await searchDrugs(debouncedQuery);
-        // Filter out existing drugs
-        const filteredData = data.filter(drug => !existingDrugIds.includes(drug.id));
-        setResults(filteredData);
+        setResults(data);
       } catch (error) {
         console.error("Failed to search drugs", error);
       } finally {
@@ -59,22 +61,35 @@ export default function AddDrugModal({
 
   const handleRandomClick = async () => {
     setIsLoading(true);
-    setQuery("Random Drug..."); // Visual feedback
     try {
-      const commonDrugs = ["Aspirin", "Ibuprofen", "Acetaminophen", "Lisinopril", "Metformin", "Atorvastatin", "Amoxicillin", "Omeprazole", "Losartan", "Albuterol"];
-      const randomTerm = commonDrugs[Math.floor(Math.random() * commonDrugs.length)];
+      const randomDrug = await getRandomDrug();
       
-      const data = await searchDrugs(randomTerm);
-      const filteredData = data.filter(drug => !existingDrugIds.includes(drug.id));
-      
-      if (filteredData.length > 0) {
-        setQuery(randomTerm);
+      if (randomDrug) {
+        // Auto-add to library
+        // Ensure properties are strings to match FDADrugResult
+        const safeRandomDrug: FDADrugResult = {
+          ...randomDrug,
+          description: randomDrug.description || "",
+          mechanism_of_action: randomDrug.mechanism_of_action || "",
+          warnings: randomDrug.warnings || "",
+          indications_and_usage: randomDrug.indications_and_usage || "",
+          dosage_and_administration: randomDrug.dosage_and_administration || "",
+          active_ingredient: randomDrug.active_ingredient || "",
+        };
+        onAdd(safeRandomDrug);
+        // The actual saving happens in onAdd usually, but let's make sure we call the server action if onAdd doesn't do it fully or if we want to be sure.
+        // Actually, onAdd in LibraryContent calls saveDrugToLibrary.
+        // But we need to pass the FDADrugResult structure.
+        // getRandomDrug returns that structure.
+        
+        toast.success(`Added ${randomDrug.brand_name} to library!`);
+        onClose();
       } else {
-        setQuery(randomTerm);
+        toast.info("Wow! You have collected all available drugs!");
       }
     } catch (error) {
       console.error("Failed to fetch random drug", error);
-      setQuery("");
+      toast.error("Failed to pick a random drug.");
     } finally {
       setIsLoading(false);
     }
@@ -149,64 +164,43 @@ export default function AddDrugModal({
           {!query && (
             <div className="animate-fade-in">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Suggestions</h3>
+                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Suggested Drugs</h3>
               </div>
               
-              <div className="grid grid-cols-2 gap-3 mb-8">
+              <div className="grid grid-cols-1 gap-3 mb-8">
                 <button 
-                  onClick={() => setQuery("Heart")}
-                  className="flex items-center gap-3 p-4 bg-muted/30 hover:bg-rose-50 dark:hover:bg-rose-900/20 border border-border hover:border-rose-200 dark:hover:border-rose-800 rounded-2xl transition-all group text-left"
+                  onClick={handleRandomClick}
+                  className="flex items-center gap-3 p-4 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 hover:from-violet-500/20 hover:to-fuchsia-500/20 border border-violet-200/50 dark:border-violet-800/50 rounded-2xl transition-all group text-left relative overflow-hidden"
                 >
-                  <div className="p-2 bg-background rounded-xl text-rose-500 shadow-sm group-hover:scale-110 transition-transform">
-                    <Heart className="w-5 h-5" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="p-3 bg-background rounded-xl text-violet-500 shadow-sm group-hover:scale-110 transition-transform z-10">
+                    <Dice5 className="w-6 h-6" />
                   </div>
-                  <div>
-                    <span className="block font-bold text-foreground group-hover:text-rose-600 dark:group-hover:text-rose-400">Heart</span>
-                    <span className="text-xs text-muted-foreground">Cardiology</span>
+                  <div className="z-10">
+                    <span className="block font-bold text-foreground text-lg group-hover:text-violet-600 dark:group-hover:text-violet-400">Random Pick</span>
+                    <span className="text-sm text-muted-foreground">Add a random drug to your library instantly</span>
                   </div>
                 </button>
+              </div>
 
-                <button 
-                  onClick={() => setQuery("Lungs")}
-                  className="flex items-center gap-3 p-4 bg-muted/30 hover:bg-sky-50 dark:hover:bg-sky-900/20 border border-border hover:border-sky-200 dark:hover:border-sky-800 rounded-2xl transition-all group text-left"
-                >
-                  <div className="p-2 bg-background rounded-xl text-sky-500 shadow-sm group-hover:scale-110 transition-transform">
-                    <Wind className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="block font-bold text-foreground group-hover:text-sky-600 dark:group-hover:text-sky-400">Lungs</span>
-                    <span className="text-xs text-muted-foreground">Respiratory</span>
-                  </div>
-                </button>
-
-                <button 
-                  onClick={() => setQuery("Infection")}
-                  className="flex items-center gap-3 p-4 bg-muted/30 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border border-border hover:border-emerald-200 dark:hover:border-emerald-800 rounded-2xl transition-all group text-left"
-                >
-                  <div className="p-2 bg-background rounded-xl text-emerald-500 shadow-sm group-hover:scale-110 transition-transform">
-                    <Stethoscope className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="block font-bold text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400">Diseases</span>
-                    <span className="text-xs text-muted-foreground">Infectious</span>
-                  </div>
-                </button>
-
-                <button 
-                  onClick={() => {
-                    const randomDrugs = ["Aspirin", "Ibuprofen", "Lisinopril", "Metformin", "Atorvastatin"];
-                    setQuery(randomDrugs[Math.floor(Math.random() * randomDrugs.length)]);
-                  }}
-                  className="flex items-center gap-3 p-4 bg-muted/30 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-border hover:border-violet-200 dark:hover:border-violet-800 rounded-2xl transition-all group text-left"
-                >
-                  <div className="p-2 bg-background rounded-xl text-violet-500 shadow-sm group-hover:scale-110 transition-transform">
-                    <Dice5 className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="block font-bold text-foreground group-hover:text-violet-600 dark:group-hover:text-violet-400">Random Pick</span>
-                    <span className="text-xs text-muted-foreground">Surprise me</span>
-                  </div>
-                </button>
+              <div className="space-y-3">
+                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+                   Popular Searches
+                 </p>
+                 <div className="flex flex-wrap gap-2">
+                    {["Atorvastatin", "Lisinopril", "Metformin", "Amlodipine", "Omeprazole", "Losartan", "Albuterol", "Gabapentin", "Hydrochlorothiazide", "Sertraline"]
+                      .filter(term => !existingDrugNames.some(name => name.toLowerCase() === term.toLowerCase()))
+                      .slice(0, 6)
+                      .map((term) => (
+                      <button
+                        key={term}
+                        onClick={() => setQuery(term)}
+                        className="px-3 py-1.5 bg-muted/50 hover:bg-muted border border-border rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                 </div>
               </div>
             </div>
           )}
@@ -264,9 +258,21 @@ export default function AddDrugModal({
                   
                   <button
                     onClick={() => onAdd(drug)}
-                    className="p-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-lg shadow-primary/20 transform group-hover:scale-105 transition-all"
+                    disabled={existingDrugIds.includes(drug.id)}
+                    className={clsx(
+                      "p-3 rounded-xl shadow-lg transition-all transform group-hover:scale-105",
+                      existingDrugIds.includes(drug.id)
+                        ? "bg-[hsl(var(--in-library-bg))] text-[hsl(var(--in-library-text))] cursor-default shadow-none"
+                        : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20"
+                    )}
                   >
-                    <Plus className="w-5 h-5" />
+                    {existingDrugIds.includes(drug.id) ? (
+                      <div className="flex items-center gap-2 px-2">
+                        <span className="text-xs font-bold">In Library</span>
+                      </div>
+                    ) : (
+                      <Plus className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               ))}

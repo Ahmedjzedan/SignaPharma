@@ -29,7 +29,8 @@ export async function searchDrugs(query: string): Promise<FDADrugResult[]> {
     const results = await db.query.drugs.findMany({
       where: or(
         like(drugs.brandName, `%${query}%`),
-        like(drugs.genericName, `%${query}%`)
+        like(drugs.genericName, `%${query}%`),
+        like(drugs.category, `%${query}%`)
       ),
       limit: 20, // Fetch more to filter client-side if needed, though we do it here
       orderBy: (drugs, { asc }) => [asc(drugs.brandName)], // Sort by brand name

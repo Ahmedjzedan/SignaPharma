@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 import { auth } from "@/lib/auth";
 import SessionProvider from "@/components/SessionProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ToastProvider } from "@/components/providers/ToastProvider";
 
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
@@ -66,6 +67,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <ToastProvider />
           </ThemeProvider>
         </SessionProvider>
       </body>

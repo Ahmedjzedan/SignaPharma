@@ -1,4 +1,4 @@
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Search } from "lucide-react";
 
 interface LibraryHeaderProps {
   stats: {
@@ -8,9 +8,11 @@ interface LibraryHeaderProps {
     streak: number;
   };
   onAddDrug: () => void;
+  searchQuery: string;
+  onSearch: (query: string) => void;
 }
 
-export default function LibraryHeader({ stats, onAddDrug }: LibraryHeaderProps) {
+export default function LibraryHeader({ stats, onAddDrug, searchQuery, onSearch }: LibraryHeaderProps) {
   return (
     <>
       {/* Header Section */}
@@ -25,13 +27,29 @@ export default function LibraryHeader({ stats, onAddDrug }: LibraryHeaderProps) 
           </p>
         </div>
 
-        <button
-          onClick={onAddDrug}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-medical-600 hover:bg-medical-700 text-white rounded-xl font-bold shadow-lg shadow-medical-600/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-        >
-          <PlusCircle className="w-5 h-5" />
-          Add Drug to Library
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <Search className="w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearch(e.target.value)}
+              placeholder="Search library..."
+              className="pl-9 pr-4 py-3 bg-muted/50 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all w-full md:w-64"
+            />
+          </div>
+
+          <button
+            onClick={onAddDrug}
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-medical-600 hover:bg-medical-700 text-white rounded-xl font-bold shadow-lg shadow-medical-600/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+          >
+            <PlusCircle className="w-5 h-5" />
+            <span className="hidden md:inline">Add Drug</span>
+            <span className="md:hidden">Add</span>
+          </button>
+        </div>
       </div>
 
       {/* STATS ROW */}

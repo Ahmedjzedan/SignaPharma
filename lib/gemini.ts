@@ -13,18 +13,24 @@ export async function fetchDrugDetailsFromGemini(drugName: string) {
     throw new Error("Gemini API key is missing");
   }
 
+  // DO NOT CHANGE THESE MODELS.
+  // The user explicitly requested ONLY these models.
+  // No 1.5 or 1.5-lite allowed.
   const models = [
-    "gemini-2.0-flash-lite-preview-02-05",
-    "gemini-2.0-flash-exp",
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-8b"
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
   ];
 
   const prompt = `
     You are a medical database assistant. 
-    Provide a detailed JSON object for the drug "${drugName}".
+    Provide a detailed JSON ARRAY of objects for the drug "${drugName}".
     
-    The JSON schema must be exactly:
+    If the drug name corresponds to multiple distinct brand names (e.g. Morphine -> Kadian, MS Contin), create a separate object for EACH brand name.
+    If it is a single drug, return an array with one object.
+
+    The JSON schema for each object must be exactly:
     {
       "brandName": "string",
       "genericName": "string",
@@ -39,7 +45,7 @@ export async function fetchDrugDetailsFromGemini(drugName: string) {
     }
     
     Ensure the data is accurate and professional.
-    Return ONLY the JSON string, no markdown formatting.
+    Return ONLY the JSON string (an array), no markdown formatting.
   `;
 
   for (const modelName of models) {

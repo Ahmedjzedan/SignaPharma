@@ -229,6 +229,14 @@ export const postLikes = sqliteTable('post_likes', {
   unq: unique().on(t.userId, t.postId),
 }));
 
+// Drug Batches
+export const drugBatches = sqliteTable('drug_batches', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  status: text('status').default('open'), // 'open', 'processing', 'completed', 'failed'
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+});
+
 // Drug Requests
 export const drugRequests = sqliteTable('drug_requests', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -237,12 +245,17 @@ export const drugRequests = sqliteTable('drug_requests', {
   status: text('status').default('pending'), // 'pending', 'approved', 'rejected'
   adminFeedback: text('admin_feedback'),
   createdDrugId: text('created_drug_id').references(() => drugs.id),
+  batchId: text('batch_id').references(() => drugBatches.id),
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
 // Relations
 import { relations } from 'drizzle-orm';
+
+export const drugBatchesRelations = relations(drugBatches, ({ many }) => ({
+  requests: many(drugRequests),
+}));
 
 export const drugRequestsRelations = relations(drugRequests, ({ one }) => ({
   user: one(users, {
@@ -252,6 +265,10 @@ export const drugRequestsRelations = relations(drugRequests, ({ one }) => ({
   createdDrug: one(drugs, {
     fields: [drugRequests.createdDrugId],
     references: [drugs.id],
+  }),
+  batch: one(drugBatches, {
+    fields: [drugRequests.batchId],
+    references: [drugBatches.id],
   }),
 }));
 
@@ -331,6 +348,17 @@ export const drugsRelations = relations(drugs, ({ one, many }) => ({
     references: [drugClasses.id],
   }),
   savedBy: many(savedDrugs),
+}));
+
+export const savedDrugsRelations = relations(savedDrugs, ({ one }) => ({
+  user: one(users, {
+    fields: [savedDrugs.userId],
+    references: [users.id],
+  }),
+  drug: one(drugs, {
+    fields: [savedDrugs.drugId],
+    references: [drugs.id],
+  }),
 }));
 
 // Force rebuild
